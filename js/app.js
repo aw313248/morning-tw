@@ -165,7 +165,13 @@ function applyFilters() {
 // ── RENDER CARDS ──
 function renderList(data) {
   if (!data.length) {
-    listEl.innerHTML = `<p class="loading-msg">找不到符合的早餐店 😅<br><small>試試換個篩選條件</small></p>`;
+    const radiusHint = activeRadius
+      ? `<br><button class="expand-btn" onclick="document.querySelector('[data-radius=\\'all\\']').click()">📍 放寬到全台中</button>`
+      : '';
+    const radiusMsg = activeRadius
+      ? `<strong>${activeRadius < 1 ? activeRadius * 1000 + ' 公尺' : activeRadius + ' 公里'}內</strong>暫時沒有收錄的早餐店`
+      : '找不到符合的早餐店';
+    listEl.innerHTML = `<p class="loading-msg">${radiusMsg}<br><small>持續新增中，歡迎推薦店家</small>${radiusHint}</p>`;
     return;
   }
   listEl.innerHTML = data.map(s => {
