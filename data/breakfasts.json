@@ -140,7 +140,7 @@
   },
   {
     "id": "tc004",
-    "name": "第二市場王記菜頭�粿湯",
+    "name": "第二市場王記菜頭粿湯",
     "nameEn": "Wang Ji Daikon Cake Soup",
     "city": "台中市",
     "district": "中區",
@@ -1425,7 +1425,6 @@
     "photo": "/photos/tc045.jpg",
     "hook": "食客所第二店，口味比本店更清爽，低脂培根飯糰是南區獨家"
   },
-
   {
     "id": "tc046",
     "name": "阿成炒麵",
@@ -1434,23 +1433,33 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區益民路二段238號",
-    "lat": 24.0875,
-    "lng": 120.6848,
-    "hours": "07:00–13:00",
+    "lat": 24.3655,
+    "lng": 120.6855,
+    "hours": "06:30–13:00",
     "closedDay": "週日、週一",
-    "types": ["soup", "local"],
-    "tags": ["炒麵", "豬血湯", "瓜仔肉飯", "大鐵鍋"],
+    "types": [
+      "soup",
+      "local"
+    ],
+    "tags": [
+      "炒麵",
+      "豬血湯",
+      "瓜仔肉飯",
+      "大鐵鍋"
+    ],
     "specialty": "現炒炒麵、綜合豬血湯",
-    "price": "40–70",
-    "desc": "大鐵鍋現炒的麵帶著迷人鍋氣，配上豬血湯一口接一口，大里人每天排隊的在地早餐傳奇。",
+    "price": "20–50",
+    "desc": "大里益民路最標誌性的早餐攤，炒麵大火翻炒帶著真實鍋氣，配上料豐富的綜合豬血湯是在地人的不二選擇。幾十年歷史，每天排隊不斷，台式早餐文化的縮影。",
     "featured": false,
     "popularity": 8,
     "icon": "🍜",
     "color": "#FFF3E0",
     "category": "traditional",
     "chain": false,
-    "photo": null,
-    "hook": "大鐵鍋鍋氣十足，配豬血湯才是大里人的正確打開方式"
+    "photo": "/photos/tc046.jpg",
+    "hook": "大鐵鍋鍋氣十足，配豬血湯才是大里人的正確打開方式",
+    "descEn": "One of Dali District's most iconic breakfast stands. The stir-fried noodles have genuine wok hei (鍋氣), and the pork blood soup is a non-negotiable side. Queue is part of the experience.",
+    "specialtyEn": "Stir-fried noodles with real wok breath, pork blood soup (must order), minced pork rice"
   },
   {
     "id": "tc047",
@@ -1460,14 +1469,22 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區中興路二段309巷口",
-    "lat": 24.0893,
-    "lng": 120.6869,
+    "lat": 24.369,
+    "lng": 120.683,
     "hours": "06:00–10:30",
     "closedDay": "週日",
-    "types": ["rice", "local"],
-    "tags": ["雙色飯糰", "白米紫米", "市場早點", "賣完即止"],
+    "types": [
+      "rice",
+      "local"
+    ],
+    "tags": [
+      "雙色飯糰",
+      "白米紫米",
+      "市場早點",
+      "賣完即止"
+    ],
     "specialty": "雙色飯糰（白米紫米各半）",
-    "price": "35–50",
+    "price": "40–45",
     "desc": "白米紫米各半的雙色飯糰超療癒，料多扎實，藏在內新黃昏市場旁，晚來真的撲空！",
     "featured": false,
     "popularity": 8,
@@ -1475,8 +1492,10 @@
     "color": "#EDE7F6",
     "category": "traditional",
     "chain": false,
-    "photo": null,
-    "hook": "雙色飯糰白米紫米各半，料多到掉出來，不早去就沒了"
+    "photo": "/photos/tc047.jpg",
+    "hook": "雙色飯糰白米紫米各半，料多到掉出來，不早去就沒了",
+    "descEn": "Featured on Taiwanese TV show 食尚玩家. Purple + white glutinous rice ball with bonito flakes and braised pork — a Dali exclusive. Get there early, sells out fast.",
+    "specialtyEn": "Dual-grain rice ball (white + purple glutinous rice, bonito flakes, braised pork) — TV-famous"
   },
   {
     "id": "tc048",
@@ -1486,23 +1505,33 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區益民路二段178號",
-    "lat": 24.0881,
-    "lng": 120.6842,
+    "lat": 24.3658,
+    "lng": 120.6858,
     "hours": "05:40–12:00",
     "closedDay": "不定休",
-    "types": ["soup", "egg", "local"],
-    "tags": ["大湯包", "現包", "爆汁", "銅板美食"],
-    "specialty": "現包爆漿大湯包、蔥蛋餅",
-    "price": "15–70",
-    "desc": "15元就能咬到爆汁湯包！現包現蒸，皮薄餡飽，大里人氣早餐，五點四十就開門等你。",
-    "featured": false,
+    "types": [
+      "egg",
+      "local"
+    ],
+    "tags": [
+      "大湯包",
+      "現包現蒸",
+      "銅板早餐",
+      "大里高中旁"
+    ],
+    "specialty": "大湯包（現包現蒸）、蛋餅、玉米蛋餅、豆漿",
+    "price": "8–25",
+    "desc": "鄰近大里高中，以手工現包現蒸的大湯包聞名。咬下去鮮湯直流，一顆8元的超佛心價格是大里最受歡迎的早餐之一，每天開門就大排長龍，早到才有。",
+    "featured": true,
     "popularity": 9,
     "icon": "🥟",
     "color": "#E8F5E9",
     "category": "traditional",
     "chain": false,
-    "photo": null,
-    "hook": "15元爆汁大湯包，大里人5:40就在排隊，你還在睡"
+    "photo": "/photos/tc048.jpg",
+    "hook": "15元爆汁大湯包，大里人5:40就在排隊，你還在睡",
+    "descEn": "Hand-wrapped soup dumplings for just NT each, steamed fresh every morning near Dali High School. Bite carefully: molten soup inside. Sells out fast.",
+    "specialtyEn": "Giant hand-wrapped soup dumplings (NT each), egg crepe, corn egg crepe, soy milk"
   },
   {
     "id": "tc049",
@@ -1512,14 +1541,22 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區仁化路567號",
-    "lat": 24.0921,
-    "lng": 120.6892,
+    "lat": 24.359,
+    "lng": 120.6925,
     "hours": "06:00–13:00",
     "closedDay": "週三",
-    "types": ["local", "rice"],
-    "tags": ["爌肉飯", "市場轉角", "銅板", "自製辣椒"],
+    "types": [
+      "local",
+      "rice"
+    ],
+    "tags": [
+      "爌肉飯",
+      "市場轉角",
+      "銅板",
+      "自製辣椒"
+    ],
     "specialty": "爌肉飯、自製辣椒",
-    "price": "35–60",
+    "price": "50–80",
     "desc": "藏身黃昏市場轉角的銅板爌肉飯，肥瘦完美、醬香迷人，加上自製辣椒更是絕配！",
     "featured": false,
     "popularity": 7,
@@ -1527,8 +1564,10 @@
     "color": "#FBE9E7",
     "category": "traditional",
     "chain": false,
-    "photo": null,
-    "hook": "黃昏市場轉角的隱藏版爌肉飯，加自製辣椒才是靈魂"
+    "photo": "/photos/tc049.jpg",
+    "hook": "黃昏市場轉角的隱藏版爌肉飯，加自製辣椒才是靈魂",
+    "descEn": "Hidden beside Renhua Evening Market. Three braised pork cuts daily — knuckle, belly or drumstick, all limited. House chili sauce is essential. Very local, very real.",
+    "specialtyEn": "Braised pork rice — pork knuckle, belly or drumstick (limited daily). Secret chili sauce is a must."
   },
   {
     "id": "tc050",
@@ -1538,12 +1577,20 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區成功路171號",
-    "lat": 24.0862,
-    "lng": 120.6857,
-    "hours": "06:00–12:00",
+    "lat": 24.3622,
+    "lng": 120.6822,
+    "hours": "05:00–14:00",
     "closedDay": "不定休",
-    "types": ["local", "rice"],
-    "tags": ["爌肉飯", "炒麵", "份量大", "排隊名店"],
+    "types": [
+      "local",
+      "rice"
+    ],
+    "tags": [
+      "爌肉飯",
+      "炒麵",
+      "份量大",
+      "排隊名店"
+    ],
     "specialty": "爌肉飯、炒麵",
     "price": "35–60",
     "desc": "不管平日假日門口永遠都是人，銅板價的爌肉飯份量豐盛，大里人的共同早餐記憶。",
@@ -1553,8 +1600,10 @@
     "color": "#FFF3E0",
     "category": "traditional",
     "chain": false,
-    "photo": null,
-    "hook": "大里人的集體早餐記憶，爌肉飯份量豐盛銅板價"
+    "photo": "/photos/tc050.jpg",
+    "hook": "大里人的集體早餐記憶，爌肉飯份量豐盛銅板價",
+    "descEn": "Open since 5am, over 20 years running. NT braised pork rice with house chili sauce. One of the most consistent breakfast options in Dali.",
+    "specialtyEn": "Braised pork rice NT with house chili sauce — a 20+ year neighborhood staple"
   },
   {
     "id": "tc051",
@@ -1564,25 +1613,34 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區東明路289號",
-    "lat": 24.0837,
-    "lng": 120.6803,
-    "hours": "07:30–14:00",
+    "lat": 24.3636,
+    "lng": 120.6773,
+    "hours": "06:00–13:30",
     "closedDay": "週一",
-    "types": ["egg"],
-    "tags": ["農場風格", "老麵漢堡", "好拍", "早午餐"],
+    "types": [
+      "egg",
+      "drink"
+    ],
+    "tags": [
+      "雞腿老麵堡",
+      "老麵發酵",
+      "台中在地品牌",
+      "現切雞腿"
+    ],
     "specialty": "老麵漢堡、農場蛋餅",
-    "price": "80–150",
+    "price": "60–150",
     "desc": "農場風格空間超好拍，老麵漢堡鬆軟有嚼勁，假日帶家人來吃早午餐最適合！",
     "featured": false,
     "popularity": 7,
     "icon": "🐓",
     "color": "#F9FBE7",
     "category": "western",
-    "chain": false,
-    "photo": null,
-    "hook": "農場風好拍空間，老麵漢堡軟Q，大里最適合帶全家去的早午餐"
+    "chain": true,
+    "photo": "/photos/tc051.jpg",
+    "hook": "農場風好拍空間，老麵漢堡軟Q，大里最適合帶全家去的早午餐",
+    "descEn": "A Taichung-born brand using old-fermented bread dough and whole-cut chicken (not patties). The Hulk Chicken Leg burger is their hero. Local pride.",
+    "specialtyEn": "Hulk chicken leg on old-fermented bun (whole cut, not patty), farm red tea, fresh milk tea"
   },
-
   {
     "id": "tc052",
     "name": "霧峰沙茶蛋餅",
@@ -1591,12 +1649,22 @@
     "district": "霧峰區",
     "region": "台中",
     "address": "台中市霧峰區錦州路178號",
-    "lat": 24.0524,
-    "lng": 120.7150,
+    "lat": 24.2651,
+    "lng": 120.7168,
     "hours": "05:30–11:30",
     "closedDay": "每月第一、三個週日",
-    "types": ["egg", "rice", "local", "drink"],
-    "tags": ["沙茶蛋餅", "30年老店", "粉漿", "飯糰"],
+    "types": [
+      "egg",
+      "rice",
+      "local",
+      "drink"
+    ],
+    "tags": [
+      "沙茶蛋餅",
+      "30年老店",
+      "粉漿",
+      "飯糰"
+    ],
     "specialty": "玉米沙茶蛋餅、綜合飯糰",
     "price": "25–55",
     "desc": "開業30年在地老店，手工粉漿餅皮淋上獨門沙茶醬，甜鹹香氣一口難忘，飯糰份量驚人。",
@@ -1606,7 +1674,7 @@
     "color": "#FFF8E1",
     "category": "traditional",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc052.jpg",
     "hook": "霧峰30年老店，獨門沙茶醬蛋餅，在地人每天早上的固定行程"
   },
   {
@@ -1617,12 +1685,19 @@
     "district": "霧峰區",
     "region": "台中",
     "address": "台中市霧峰區中正路（霧峰市區）",
-    "lat": 24.0585,
-    "lng": 120.7173,
+    "lat": 24.2648,
+    "lng": 120.7165,
     "hours": "07:00–11:30",
     "closedDay": "不定休",
-    "types": ["local"],
-    "tags": ["餡餅", "韭菜盒子", "蔥油餅", "現做"],
+    "types": [
+      "local"
+    ],
+    "tags": [
+      "餡餅",
+      "韭菜盒子",
+      "蔥油餅",
+      "現做"
+    ],
     "specialty": "牛肉餡餅、韭菜盒子",
     "price": "25–55",
     "desc": "現點現做的餡餅外皮酥香、內餡飽滿，霧峰人每天排隊搶購，賣完就關門等明天！",
@@ -1632,7 +1707,7 @@
     "color": "#FBE9E7",
     "category": "traditional",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc053.jpg",
     "hook": "現點現做的酥香餡餅，霧峰人每天早上排隊，晚去就哭哭"
   },
   {
@@ -1643,12 +1718,19 @@
     "district": "霧峰區",
     "region": "台中",
     "address": "台中市霧峰區振興街118巷7號",
-    "lat": 24.0598,
-    "lng": 120.7183,
+    "lat": 24.264,
+    "lng": 120.7172,
     "hours": "06:30–13:00",
     "closedDay": "不定休",
-    "types": ["egg"],
-    "tags": ["鐵板麵", "豬排蛋餅", "大學生", "寬敞冷氣"],
+    "types": [
+      "egg"
+    ],
+    "tags": [
+      "鐵板麵",
+      "豬排蛋餅",
+      "大學生",
+      "寬敞冷氣"
+    ],
     "specialty": "鐵板麵、豬排蛋餅",
     "price": "60–100",
     "desc": "空間超寬敞又有冷氣，大學生揪朋友聚早餐的首選，多樣餐點讓你每天都不重複！",
@@ -1658,7 +1740,7 @@
     "color": "#E3F2FD",
     "category": "western",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc054.jpg",
     "ac": true,
     "hook": "霧峰大學生的共同早餐基地，有冷氣寬敞好停車"
   },
@@ -1670,12 +1752,19 @@
     "district": "霧峰區",
     "region": "台中",
     "address": "台中市霧峰區錦州路34號",
-    "lat": 24.0509,
-    "lng": 120.7145,
+    "lat": 24.2655,
+    "lng": 120.717,
     "hours": "08:30–16:00",
     "closedDay": "週二",
-    "types": ["egg"],
-    "tags": ["質感早午餐", "咖啡", "拉花", "整天供應"],
+    "types": [
+      "egg"
+    ],
+    "tags": [
+      "質感早午餐",
+      "咖啡",
+      "拉花",
+      "整天供應"
+    ],
     "specialty": "招牌早午餐套餐、咖啡拿鐵",
     "price": "120–180",
     "desc": "咖啡拉花美、餐點有誠意，霧峰少數全天供應早午餐的質感小店，來這裡慢慢吃最對！",
@@ -1685,10 +1774,9 @@
     "color": "#EFEBE9",
     "category": "western",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc055.jpg",
     "hook": "霧峰質感早午餐，咖啡拉花好看，還可以坐到下午"
   },
-
   {
     "id": "tc056",
     "name": "長江早點",
@@ -1701,8 +1789,17 @@
     "lng": 120.6921,
     "hours": "05:45–11:00",
     "closedDay": "週一",
-    "types": ["soup", "drink", "local"],
-    "tags": ["小籠湯包", "燒餅夾油條", "鹹豆漿", "北屯傳奇"],
+    "types": [
+      "soup",
+      "drink",
+      "local"
+    ],
+    "tags": [
+      "小籠湯包",
+      "燒餅夾油條",
+      "鹹豆漿",
+      "北屯傳奇"
+    ],
     "specialty": "手工小籠湯包、燒餅夾油條、鹹豆漿",
     "price": "25–90",
     "desc": "每天早上人龍不斷的北屯傳奇！手工現蒸小籠湯包一咬噴汁，搭鹹豆漿才是標準吃法。",
@@ -1712,7 +1809,7 @@
     "color": "#FFF8E1",
     "category": "traditional",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc056.jpg",
     "hook": "北屯每天人龍的傳奇！小籠湯包一咬噴汁，油條酥脆連火鍋店都來批"
   },
   {
@@ -1727,8 +1824,16 @@
     "lng": 120.6987,
     "hours": "05:30–10:30",
     "closedDay": "週日、週一",
-    "types": ["drink", "local"],
-    "tags": ["燒餅", "油條", "鹹豆漿", "大量蔥花"],
+    "types": [
+      "drink",
+      "local"
+    ],
+    "tags": [
+      "燒餅",
+      "油條",
+      "鹹豆漿",
+      "大量蔥花"
+    ],
     "specialty": "燒餅夾油條（爆量蔥花）、鹹豆漿",
     "price": "25–60",
     "desc": "燒餅夾的蔥花多到快掉出來，油條現炸現夾超酥脆，簡單幾樣東西就能讓你心滿意足！",
@@ -1738,7 +1843,7 @@
     "color": "#FFF3E0",
     "category": "traditional",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc057.jpg",
     "hook": "蔥花多到快掉出來的燒餅油條，北屯老饕才知道的5:30開門店"
   },
   {
@@ -1753,8 +1858,16 @@
     "lng": 120.6942,
     "hours": "05:30–11:00",
     "closedDay": "不定休",
-    "types": ["rice", "local"],
-    "tags": ["創意飯糰", "客家小炒飯糰", "鮭魚飯糰", "登山客補給"],
+    "types": [
+      "rice",
+      "local"
+    ],
+    "tags": [
+      "創意飯糰",
+      "客家小炒飯糰",
+      "鮭魚飯糰",
+      "登山客補給"
+    ],
     "specialty": "客家小炒飯糰、鮭魚飯糰",
     "price": "35–55",
     "desc": "創意飯糰口味多到讓你選擇困難，客家小炒飯糰最特別，登山客早晨必備補給站！",
@@ -1764,7 +1877,7 @@
     "color": "#E8F5E9",
     "category": "traditional",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc058.jpg",
     "hook": "客家小炒口味的創意飯糰，北屯登山客和早起族的秘密補給站"
   },
   {
@@ -1779,8 +1892,15 @@
     "lng": 120.6871,
     "hours": "08:00–14:00",
     "closedDay": "週二",
-    "types": ["egg"],
-    "tags": ["IG爆紅", "火烤三明治", "份量浮誇", "拍照打卡"],
+    "types": [
+      "egg"
+    ],
+    "tags": [
+      "IG爆紅",
+      "火烤三明治",
+      "份量浮誇",
+      "拍照打卡"
+    ],
     "specialty": "火烤三明治、炸物拼盤",
     "price": "100–200",
     "desc": "IG爆紅的浮誇系早午餐！火烤三明治份量嚇人，吃一份飽一整天，捷運松竹站步行可達。",
@@ -1790,7 +1910,7 @@
     "color": "#FFF9C4",
     "category": "western",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc059.png",
     "hook": "IG爆紅！火烤三明治份量嚇人，一個人根本吃不完"
   },
   {
@@ -1805,8 +1925,16 @@
     "lng": 120.6905,
     "hours": "06:30–11:00",
     "closedDay": "不定休",
-    "types": ["egg", "local"],
-    "tags": ["古早味蛋餅", "粉漿", "什錦煎餅", "在地低調"],
+    "types": [
+      "egg",
+      "local"
+    ],
+    "tags": [
+      "古早味蛋餅",
+      "粉漿",
+      "什錦煎餅",
+      "在地低調"
+    ],
     "specialty": "古早味粉漿蛋餅、什錦蔬菜煎餅",
     "price": "30–55",
     "desc": "現點現煎的粉漿蛋餅Q彈有嚼勁，什錦蔬菜煎餅料超多，在地人才知道的低調口袋名單！",
@@ -1816,7 +1944,7 @@
     "color": "#FFFDE7",
     "category": "traditional",
     "chain": false,
-    "photo": null,
+    "photo": "/photos/tc060.jpg",
     "hook": "北屯國小旁的低調老店，粉漿蛋餅Q到讓人每天都想回來"
   },
   {
@@ -1831,8 +1959,15 @@
     "lng": 120.6898,
     "hours": "05:30–14:30",
     "closedDay": "不定休",
-    "types": ["egg"],
-    "tags": ["竹炭黑皮堡", "鹹蛋黃豬排堡", "5:30開門", "捷運旁"],
+    "types": [
+      "egg"
+    ],
+    "tags": [
+      "竹炭黑皮堡",
+      "鹹蛋黃豬排堡",
+      "5:30開門",
+      "捷運旁"
+    ],
     "specialty": "竹炭黑皮堡、鹹蛋黃金沙厚切豬排堡",
     "price": "80–150",
     "desc": "一早5:30就開門超貼心！漢堡、義大利麵、中式炒麵通通有，捷運旁通勤族的早餐救星！",
@@ -1842,7 +1977,220 @@
     "color": "#E3F2FD",
     "category": "western",
     "chain": true,
-    "photo": null,
+    "photo": "/photos/tc061.jpg",
     "hook": "5:30就開門的北屯通勤族救星，竹炭黑皮堡吸睛又好吃"
+  },
+  {
+    "id": "tc062",
+    "name": "大里李記小籠包",
+    "nameEn": "Dali Li Ji Xiao Long Bao",
+    "city": "台中市",
+    "district": "大里區",
+    "region": "台中",
+    "address": "台中市大里區成功路190號",
+    "lat": 24.3623,
+    "lng": 120.6825,
+    "hours": "06:00–售完",
+    "closedDay": "週一",
+    "types": [
+      "local"
+    ],
+    "tags": [
+      "小籠包",
+      "手工現包",
+      "大里早餐",
+      "周末排隊"
+    ],
+    "specialty": "手工小籠包（5顆NT）、肉包",
+    "specialtyEn": "Hand-wrapped xiaolongbao NT/5 — bigger and thicker-skinned than typical, burst with soup",
+    "price": "40–80",
+    "desc": "大里成功路上的手工小籠包專賣，外皮比一般更厚實，皮Q有嚼勁，湯汁滿滿，每籠5顆40元。周末常常一開門就賣光，是大里在地人帶外地朋友必去的早餐選擇之一。",
+    "descEn": "Different from Shanghai-style — thicker skins, more chew, still bursting with soup. Five dumplings for NT. Sell out fast on weekends.",
+    "featured": false,
+    "icon": "🥟",
+    "color": "#E8F5E9",
+    "popularity": 8,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc062.jpg",
+    "hook": "手工現包小籠包5顆只要40元，皮厚湯汁多，大里人帶外地朋友必去"
+  },
+  {
+    "id": "tc063",
+    "name": "艾初早午餐 大里仁化店",
+    "nameEn": "Aitrue Brunch Dali Renhua",
+    "city": "台中市",
+    "district": "大里區",
+    "region": "台中",
+    "address": "台中市大里區仁化路476號",
+    "lat": 24.3612,
+    "lng": 120.6908,
+    "hours": "05:30–14:30",
+    "closedDay": "無",
+    "types": [
+      "egg",
+      "local"
+    ],
+    "tags": [
+      "起司瀑布堡",
+      "麻辣鴨血泡麵",
+      "大里限定",
+      "日式風格"
+    ],
+    "specialty": "瀑布起司牛肉堡、麻辣鴨血泡麵（大里限定）、竹炭黑皮堡",
+    "specialtyEn": "Waterfall cheese beef burger, exclusive Dali-only spicy duck blood noodles, charcoal black bun burger",
+    "price": "60–150",
+    "desc": "2021年開幕，日式風格空間，麻辣鴨血泡麵是大里仁化店獨家限定，其他分店吃不到。起司瀑布堡的融化起司視覺效果驚人，無服務費。",
+    "descEn": "Their spicy duck blood instant noodles are exclusive to THIS branch only. The waterfall cheese burger is a visual spectacle. Japanese aesthetic, no service charge.",
+    "featured": true,
+    "icon": "🍔",
+    "color": "#FFF3E0",
+    "popularity": 8,
+    "category": "western",
+    "chain": true,
+    "photo": "/photos/tc063.jpg",
+    "hook": "大里限定麻辣鴨血泡麵全台獨家，加上起司瀑布堡，早午餐界的個性代表"
+  },
+  {
+    "id": "tc064",
+    "name": "大里伯晨食館",
+    "nameEn": "Dali Bo Morning Kitchen",
+    "city": "台中市",
+    "district": "大里區",
+    "region": "台中",
+    "address": "台中市大里區西榮路121號",
+    "lat": 24.3648,
+    "lng": 120.6808,
+    "hours": "06:00–13:00",
+    "closedDay": "不定休",
+    "types": [
+      "egg",
+      "rice"
+    ],
+    "tags": [
+      "海苔飯捲",
+      "泡菜烤肉",
+      "肉蛋吐司",
+      "素食友善"
+    ],
+    "specialty": "泡菜烤肉海苔飯捲、肉蛋吐司、素食飯捲",
+    "specialtyEn": "Kimchi BBQ seaweed rice roll, meat-egg toast, vegetarian rice rolls",
+    "price": "40–100",
+    "desc": "大里西榮路上的早餐店，泡菜烤肉海苔飯捲料多紮實，素食友善。",
+    "descEn": "Hearty kimchi BBQ seaweed rice rolls great for takeout. Vegetarian options available.",
+    "featured": false,
+    "icon": "🍙",
+    "color": "#E8F5E9",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc064.jpg",
+    "hook": "泡菜烤肉海苔飯捲一捲讓你飽到中午，大里最好帶的外帶早餐"
+  },
+  {
+    "id": "tc065",
+    "name": "可口飯糰 東榮店",
+    "nameEn": "Kekou Rice Ball Dongrong",
+    "city": "台中市",
+    "district": "大里區",
+    "region": "台中",
+    "address": "台中市大里區東榮路38-2號",
+    "lat": 24.3618,
+    "lng": 120.6758,
+    "hours": "06:00–11:00",
+    "closedDay": "不定休",
+    "types": [
+      "rice"
+    ],
+    "tags": [
+      "大顆飯糰",
+      "糯米Q彈",
+      "大里公園對面",
+      "料多飽足"
+    ],
+    "specialty": "大顆糯米飯糰（多種口味）",
+    "specialtyEn": "Large glutinous rice balls across from Dali Park — one of the two best in Dali",
+    "price": "35–55",
+    "desc": "大里公園對面的黃色招牌飯糰店，糯米Q彈料給得大方，份量紮實。",
+    "descEn": "Yellow signboard across from Dali Park. Large glutinous rice balls with generous fillings.",
+    "featured": false,
+    "icon": "🍙",
+    "color": "#EDE7F6",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc065.jpg",
+    "hook": "大里公園對面黃色招牌，大顆糯米飯糰，不用擠中興飯糰的另一個選擇"
+  },
+  {
+    "id": "tc066",
+    "name": "大里塗城路麻醬麵",
+    "nameEn": "Dali Tucheng Sesame Noodles",
+    "city": "台中市",
+    "district": "大里區",
+    "region": "台中",
+    "address": "台中市大里區塗城路294號",
+    "lat": 24.3558,
+    "lng": 120.6943,
+    "hours": "10:30–13:30",
+    "closedDay": "週日",
+    "types": [
+      "soup",
+      "local"
+    ],
+    "tags": [
+      "麻醬麵",
+      "隱藏版",
+      "無網路存在",
+      "10種湯品"
+    ],
+    "specialty": "麻醬麵、肉燥飯、10種以上湯品",
+    "specialtyEn": "Sesame paste noodles with generous thick sauce, 10+ soup varieties — a true hidden gem with no online presence",
+    "price": "30–60",
+    "desc": "幾乎沒有網路資訊的真正隱藏版，Q彈麵條配濃郁麻醬，每天客滿。",
+    "descEn": "Almost zero online presence, yet perpetually packed. Springy noodles with thick sesame sauce and over 10 soup options.",
+    "featured": true,
+    "icon": "🍜",
+    "color": "#FFF3E0",
+    "popularity": 8,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc066.jpg",
+    "hook": "網路上幾乎找不到，但每天客滿的塗城路麻醬麵，這才是真正的在地秘密"
+  },
+  {
+    "id": "tc067",
+    "name": "吳記排骨飯",
+    "nameEn": "Wu Ji Pork Chop Rice",
+    "city": "台中市",
+    "district": "大里區",
+    "region": "台中",
+    "address": "台中市大里區益民路二段339號",
+    "lat": 24.3672,
+    "lng": 120.6855,
+    "hours": "06:00–13:00",
+    "closedDay": "不定休",
+    "types": [
+      "rice"
+    ],
+    "tags": [
+      "排骨飯",
+      "銅板早餐",
+      "20元炒麵",
+      "益民路"
+    ],
+    "specialty": "排骨飯（NT$50）、爌肉飯、炒麵（NT$20）",
+    "specialtyEn": "Pork chop rice NT$50, noodles NT$20 — coin-price neighborhood staple",
+    "price": "20–60",
+    "desc": "益民路老字號，20元炒麵、50元排骨飯，大里最實在的銅板早餐。",
+    "descEn": "Pork chop rice NT$50, noodles NT$20. Dali's best value breakfast for students and families.",
+    "featured": false,
+    "icon": "🍱",
+    "color": "#FFF8E1",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc067.jpg",
+    "hook": "NT$20炒麵NT$50排骨飯，大里最佛心早餐，吃飽還找得到零錢"
   }
 ]

@@ -35,11 +35,13 @@ function _renderUniversities() {
   UNIVERSITIES.forEach(u => {
     const icon = L.divIcon({
       className: '',
-      html: `<div class="uni-pin"><span>🎓</span></div>`,
-      iconSize: [28, 28], iconAnchor: [14, 14],
+      html: `<div class="uni-pin">
+        <div class="uni-pin__dot"><span>🎓</span></div>
+        <div class="uni-pin__name">${u.name}</div>
+      </div>`,
+      iconSize: [90, 44], iconAnchor: [45, 14],
     });
-    L.marker([u.lat, u.lng], { icon, interactive: true, zIndexOffset: -100 })
-      .bindTooltip(u.name, { direction: 'top', offset: [0, -10], className: 'uni-tooltip' })
+    L.marker([u.lat, u.lng], { icon, interactive: false, zIndexOffset: -100 })
       .addTo(map);
   });
 }
@@ -73,6 +75,10 @@ export function resetView() {
   if (!map) return;
   map.flyTo(TAICHUNG_CENTER, DEFAULT_ZOOM, { duration: 0.6 });
   document.querySelectorAll('.map-pin').forEach(el => el.classList.remove('map-pin--active'));
+}
+
+export function invalidateSize() {
+  if (map) map.invalidateSize();
 }
 
 export function locateUser(onResult) {

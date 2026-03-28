@@ -1,5 +1,5 @@
 // ── MORNING TW — App ──
-import { initMap, renderMarkers, focusShop, resetView } from './map.js';
+import { initMap, renderMarkers, focusShop, resetView, invalidateSize } from './map.js';
 
 // Supabase 懶加載，不阻塞主程式
 let _supabase = null;
@@ -37,15 +37,22 @@ function distKm(lat1, lng1, lat2, lng2) {
 }
 // 直線距離 × 道路修正係數（台中市區約 1.35）
 const ROAD_FACTOR = 1.35;
-const BIKE_KMH = 13; // 市區騎車含紅燈
+const TRAVEL_MODES = {
+  walk:    { kmh: 4.5,  icon: '🚶', label: '走路' },
+  scooter: { kmh: 13,   icon: '🛵', label: '機車' },
+  car:     { kmh: 22,   icon: '🚗', label: '開車' },
+};
+let travelMode = localStorage.getItem('mw_travel_mode') || 'scooter';
 
 function fmtDist(straightKm) {
   const km = straightKm * ROAD_FACTOR;
-  const bikeMin = Math.round(km / BIKE_KMH * 60);
-  const walkMin = Math.round(km / 5 * 60);
-  if (km < 0.12) return `步行約 ${walkMin} 分鐘`;
-  if (bikeMin <= 2) return `騎車約 ${bikeMin} 分鐘（${Math.round(km * 1000)} 公尺）`;
-  return `騎車約 ${bikeMin} 分鐘`;
+  const mode = TRAVEL_MODES[travelMode];
+  const min = Math.round(km / mode.kmh * 60);
+  const mLabel = mode.label;
+  const mIcon = mode.icon;
+  if (km < 0.12) return `${mIcon} ${mLabel}約 1 分鐘以內`;
+  if (min <= 2) return `${mIcon} ${mLabel}約 ${min} 分鐘（${Math.round(km * 1000)} 公尺）`;
+  return `${mIcon} ${mLabel}約 ${min} 分鐘`;
 }
 
 // ── STATE ──
@@ -75,10 +82,22 @@ const bottomSheet   = document.getElementById('bottom-sheet');
 (async () => {
   const res = await fetch('data/breakfasts.json');
   allData = await res.json();
+  window._morningTWData = allData;
+  window.dispatchEvent(new CustomEvent('morning:dataLoaded', { detail: allData }));
+  // Update hero shop count dynamically
+  const browseLink = document.querySelector('.hero__browse');
+  if (browseLink) browseLink.textContent = `瀏覽全部 ${allData.length} 間早餐店 ↓`;
+
   buildMarquee(allData);
   initMap(openSheet);
   tryAutoLocate();
   setupEvents();
+
+  // AI recommender: 開啟店家 sheet
+  window.addEventListener('ai:openShop', e => {
+    const shop = allData.find(s => s.id === e.detail);
+    if (shop) openSheet(shop);
+  });
 })();
 
 // ── FAVORITES ──
@@ -186,48 +205,72 @@ function applyFilters() {
   renderMarkers(filtered);
 }
 
+// ── RESET ALL FILTERS ──
+function resetAllFilters() {
+  showOpenOnly = false;
+  activeType = 'all';
+  activeDistrict = 'all';
+  searchQuery = '';
+  activeRadius = null;
+  activeSort = 'popular';
+
+  if (searchInput) searchInput.value = '';
+  if (btnOpenNow) { btnOpenNow.classList.remove('sort-tab--active'); btnOpenNow.textContent = '🕐 現在營業'; }
+
+  typeChips?.querySelectorAll('.chip').forEach(c => c.classList.remove('chip--active'));
+  typeChips?.querySelector('[data-type="all"]')?.classList.add('chip--active');
+  districtChips?.querySelectorAll('.chip--district').forEach(c => c.classList.remove('chip--active'));
+  districtChips?.querySelector('[data-district="all"]')?.classList.add('chip--active');
+  sortBar?.querySelectorAll('.sort-tab[data-sort]').forEach(t => t.classList.remove('sort-tab--active'));
+  sortBar?.querySelector('[data-sort="popular"]')?.classList.add('sort-tab--active');
+  document.querySelectorAll('#radius-bar .nearby-btn').forEach(b => b.classList.remove('nearby-btn--active'));
+  document.querySelector('#radius-bar .nearby-btn[data-radius="all"]')?.classList.add('nearby-btn--active');
+
+  applyFilters();
+}
+
 // ── RENDER CARDS ──
 function renderList(data) {
   if (!data.length) {
-    const radiusHint = activeRadius
-      ? `<br><button class="expand-btn" onclick="document.querySelector('[data-radius=\\'all\\']').click()">📍 顯示全台中</button>`
+    const hasFilters = showOpenOnly || activeType !== 'all' || activeDistrict !== 'all' || searchQuery || activeRadius;
+    const resetHint = hasFilters
+      ? `<br><button class="expand-btn" id="btn-reset-filters">🔄 清除所有篩選</button>`
       : '';
     const radiusMsg = activeRadius
       ? `附近 <strong>${activeRadius < 1 ? activeRadius * 1000 + '公尺' : activeRadius + '公里'}</strong> 內找不到早餐店`
       : '找不到符合的早餐店';
-    listEl.innerHTML = `<p class="loading-msg">${radiusMsg}<br><small>持續新增中，歡迎投稿推薦！</small>${radiusHint}</p>`;
+    listEl.innerHTML = `<p class="loading-msg">${radiusMsg}<br><small>持續新增中，歡迎投稿推薦！</small>${resetHint}</p>`;
+    document.getElementById('btn-reset-filters')?.addEventListener('click', resetAllFilters);
     return;
   }
   listEl.innerHTML = data.map(s => {
     const open = isOpenNow(s.hours);
-    const tags = s.types.slice(0, 2).map(t => {
-      const info = TYPE_LABELS[t];
-      return info ? `<span class="tag-mini">${info.icon} ${info.label}</span>` : '';
-    }).join('');
-    const distBadge = s.dist !== null ? `<span class="shop-card__dist">🚴 ${fmtDist(s.dist)}</span>` : '';
+    const distBadge = s.dist !== null ? `<span class="shop-card__dist">${fmtDist(s.dist)}</span>` : '';
     const favIcon = isFav(s.id) ? '❤️' : '🤍';
+    const featuredBadge = s.userFavorite
+      ? `<span class="shop-card__featured shop-card__featured--fav">♥ 編輯精選</span>`
+      : s.featured ? `<span class="shop-card__featured">精選</span>` : '';
 
     return `
-      <div class="shop-card${s.chain ? ' shop-card--chain' : ''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.nameEn || s.name}">
-        <div class="shop-card__icon">
-          ${s.icon}
-          ${s.photo ? `<img class="shop-card__photo" src="${s.photo}" alt="${s.name}" loading="lazy" onerror="this.remove()">` : ''}
+      <div class="shop-card${s.chain ? ' shop-card--chain' : ''}${!open ? ' shop-card--closed' : ''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.nameEn || s.name}">
+        <div class="shop-card__thumb">
+          ${s.photo
+            ? `<img src="${s.photo}" alt="${s.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=shop-card__thumb-emoji>${s.icon}</div><span class=shop-card__status-badge ${open ? 'open' : 'close'}>${open ? '● 營業中' : '○ 休息中'}</span>'">`
+            : `<div class="shop-card__thumb-emoji">${s.icon}</div>`
+          }
+          <span class="shop-card__status-badge ${open ? 'open' : 'close'}">${open ? '● 營業中' : '○ 休息中'}</span>
+          ${featuredBadge}
+          <button class="shop-card__fav" data-fav="${s.id}" title="Save">${favIcon}</button>
         </div>
-        <div class="shop-card__body">
+        <div class="shop-card__info">
           <div class="shop-card__name">${s.name}</div>
           ${s.nameEn ? `<div class="shop-card__name-en">${s.nameEn}</div>` : ''}
+          ${s.hook ? `<p class="shop-card__hook">${s.hook}</p>` : ''}
           <div class="shop-card__meta">
             <span>${s.district}</span>
-            <span class="shop-card__dot">·</span>
-            <span class="${open ? 'shop-card__status-open' : 'shop-card__status-close'}">
-              ${open ? '● 營業中' : '○ 休息'}
-            </span>
             ${distBadge ? `<span class="shop-card__dot">·</span>${distBadge}` : ''}
           </div>
-          <div class="shop-card__tags">${tags}</div>
         </div>
-        ${s.userFavorite ? '<span class="shop-card__featured shop-card__featured--fav">♥ 編輯精選</span>' : s.featured ? '<span class="shop-card__featured">精選</span>' : ''}
-        <button class="shop-card__fav" data-fav="${s.id}" title="Save">${favIcon}</button>
       </div>
     `;
   }).join('');
@@ -246,9 +289,24 @@ function renderList(data) {
       e.stopPropagation();
       const id = btn.dataset.fav;
       toggleFav(id);
-      btn.textContent = isFav(id) ? '❤️' : '🤍';
+      const nowFav = isFav(id);
+      btn.textContent = nowFav ? '❤️' : '🤍';
+      btn.classList.remove('fav-bounce');
+      void btn.offsetWidth; // reflow
+      btn.classList.add('fav-bounce');
+      if (nowFav) showToast('已收藏 ❤️');
     });
   });
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('toast--in'));
+  setTimeout(() => { t.classList.remove('toast--in'); setTimeout(() => t.remove(), 300); }, 1800);
 }
 
 // ── BOTTOM SHEET ──
@@ -263,7 +321,7 @@ function openSheet(shop) {
     return info ? `<span class="tag ${info.cls}">${info.icon} ${info.label}</span>` : '';
   }).join('');
   const distLine = shop.dist !== null
-    ? `<div class="info-item"><div class="info-item__label">距你</div><div class="info-item__value">🚴 ${fmtDist(shop.dist)}<br><small style="color:#aaa;font-size:10px;font-weight:400">市區騎車預估</small></div></div>`
+    ? `<div class="info-item"><div class="info-item__label">距你</div><div class="info-item__value">${fmtDist(shop.dist)}</div></div>`
     : '';
 
   bottomSheet.innerHTML = `
@@ -408,6 +466,7 @@ async function loadComments(shopId) {
 function closeSheet() {
   sheetOverlay.classList.remove('sheet-overlay--open');
   bottomSheet.classList.remove('bottom-sheet--open');
+  bottomSheet.style.transform = '';
   currentShopId = null;
   resetView();
 }
@@ -429,7 +488,12 @@ function buildMarquee(data) {
   if (!track) return;
   const items = [...data, ...data].map(s => `
     <div class="marquee-item" data-id="${s.id}">
-      <div class="marquee-item__icon" style="background:${s.color || '#f5f5f5'}">${s.icon}</div>
+      <div class="marquee-item__icon">
+        ${s.photo
+            ? `<img src="${s.photo}" alt="${s.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.dataset.fb='1';this.parentElement.textContent='${s.icon}'">`
+            : s.icon
+          }
+      </div>
       <span class="marquee-item__name">${s.name}</span>
     </div>
   `).join('');
@@ -442,11 +506,47 @@ function buildMarquee(data) {
   });
 }
 
+// ── TAB SYSTEM ──
+let currentTab = 'list';
+
+function setTab(tab) {
+  currentTab = tab;
+  document.body.setAttribute('data-view', tab);
+  // Nav tabs
+  document.querySelectorAll('.nav__tab').forEach(el => {
+    el.classList.toggle('tab--active', el.dataset.tab === tab);
+  });
+  // Bottom nav — map button active only in map view, others active in list view
+  document.querySelectorAll('.bnav__item').forEach(el => {
+    const isMapBtn = el.dataset.tab === 'map';
+    el.classList.toggle('bnav__item--active', tab === 'map' ? isMapBtn : !isMapBtn && el.dataset.action === 'home');
+  });
+  if (tab === 'map') {
+    setTimeout(() => invalidateSize(), 80);
+  }
+}
+
 // ── EVENTS ──
 function setupEvents() {
+  // Nav tab buttons
+  document.querySelectorAll('[data-tab]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const tab = btn.dataset.tab;
+      if (tab === 'map') { e.preventDefault(); setTab('map'); return; }
+      if (tab === 'list') {
+        e.preventDefault(); setTab('list');
+        // sub-action
+        const action = btn.dataset.action;
+        if (action === 'search') { searchInput?.focus(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        else if (action === 'list') { document.getElementById('list-section')?.scrollIntoView({ behavior: 'smooth' }); }
+        else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      }
+    });
+  });
+
   searchBtn.addEventListener('click', () => { searchQuery = searchInput.value; applyFilters(); });
   searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') { searchQuery = searchInput.value; applyFilters(); } });
-  searchInput.addEventListener('input', () => { if (!searchInput.value) { searchQuery = ''; applyFilters(); } });
+  searchInput.addEventListener('input', () => { searchQuery = searchInput.value; applyFilters(); });
 
   typeChips?.addEventListener('click', e => {
     const chip = e.target.closest('.chip[data-type]');
@@ -467,9 +567,9 @@ function setupEvents() {
   });
 
   sortBar?.addEventListener('click', async e => {
-    const tab = e.target.closest('.sort-tab');
+    const tab = e.target.closest('.sort-tab[data-sort]'); // only sort tabs, not toggles
     if (!tab) return;
-    sortBar.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('sort-tab--active'));
+    sortBar.querySelectorAll('.sort-tab[data-sort]').forEach(t => t.classList.remove('sort-tab--active'));
     tab.classList.add('sort-tab--active');
     activeSort = tab.dataset.sort;
     if (activeSort === 'distance' && !userLat) {
@@ -504,10 +604,13 @@ function setupEvents() {
     applyFilters();
   });
 
-  // Saved filter (sort bar shortcut → syncs with chip)
+  // Saved filter — toggle: if already in favorites, reset to all
   document.getElementById('btn-favs-filter')?.addEventListener('click', () => {
-    const chip = document.querySelector('[data-type="favorites"]');
-    if (chip) chip.click();
+    if (activeType === 'favorites') {
+      typeChips?.querySelector('[data-type="all"]')?.click();
+    } else {
+      typeChips?.querySelector('[data-type="favorites"]')?.click();
+    }
   });
 
   // 半徑快篩 — 點選自動觸發定位
@@ -559,6 +662,34 @@ function setupEvents() {
 
   sheetOverlay.addEventListener('click', closeSheet);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+  // ── TRANSPORT MODE ──
+  function syncTransportUI() {
+    document.querySelectorAll('.transport-btn').forEach(b => {
+      b.classList.toggle('transport-btn--active', b.dataset.mode === travelMode);
+    });
+  }
+  syncTransportUI();
+  document.getElementById('transport-strip')?.addEventListener('click', e => {
+    const btn = e.target.closest('.transport-btn[data-mode]');
+    if (!btn) return;
+    travelMode = btn.dataset.mode;
+    localStorage.setItem('mw_travel_mode', travelMode);
+    syncTransportUI();
+    if (userLat !== null) applyFilters(); // refresh distance displays
+  });
+
+  // 下滑關閉 sheet
+  let tsY = 0;
+  bottomSheet.addEventListener('touchstart', e => { tsY = e.touches[0].clientY; }, { passive: true });
+  bottomSheet.addEventListener('touchmove', e => {
+    const dy = e.touches[0].clientY - tsY;
+    if (dy > 0) bottomSheet.style.transform = `translateY(${dy}px)`;
+  }, { passive: true });
+  bottomSheet.addEventListener('touchend', e => {
+    const dy = e.changedTouches[0].clientY - tsY;
+    if (dy > 80) { closeSheet(); } else { bottomSheet.style.transform = ''; }
+  });
 
   // Handle share link ?shop=id on load
   const urlParams = new URLSearchParams(location.search);
