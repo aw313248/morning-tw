@@ -495,7 +495,8 @@ function openSheet(shop) {
   document.getElementById('c-submit').addEventListener('click', async () => {
     const nick = document.getElementById('c-nick').value.trim();
     const content = document.getElementById('c-content').value.trim();
-    if (!nick || !content) { alert('請填寫暱稱和留言'); return; }
+    if (!nick || !content) { showToast('請填寫暱稱和留言'); return; }
+    if (nick.length > 20 || content.length > 300) { showToast('內容超過長度限制'); return; }
     const btn = document.getElementById('c-submit');
     btn.disabled = true; btn.textContent = '送出中…';
     try {
@@ -511,6 +512,16 @@ function openSheet(shop) {
   loadComments(shop.id);
 }
 
+// XSS-safe text escaping
+function escHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 async function loadComments(shopId) {
   const el = document.getElementById('comments-list');
   if (!el) return;
@@ -522,11 +533,11 @@ async function loadComments(shopId) {
   el.innerHTML = comments.map(c => `
     <div class="comment-item">
       <div class="comment-item__header">
-        <span class="comment-nick">${c.nickname}</span>
+        <span class="comment-nick">${escHtml(c.nickname)}</span>
         <span class="comment-stars">${'★'.repeat(c.rating)}${'☆'.repeat(5 - c.rating)}</span>
         <span class="comment-date">${new Date(c.created_at).toLocaleDateString('zh-TW')}</span>
       </div>
-      <p class="comment-content">${c.content}</p>
+      <p class="comment-content">${escHtml(c.content)}</p>
     </div>
   `).join('');
 }
