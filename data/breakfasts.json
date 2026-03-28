@@ -166,6 +166,8 @@
     "descEn": "A century-old stall in Taichung's 2nd Market. 菜頭粿湯 (cài tóu guǒ tāng) is a uniquely Taiwanese breakfast — chewy rice-paste daikon cakes simmered in pork bone broth. You won't find this outside Taiwan.",
     "specialtyEn": "Daikon rice cake soup (daikon cakes in pork broth), pig blood soup",
     "featured": true,
+    "sponsored": true,
+    "sponsoredLabel": "推薦",
     "icon": "🥣",
     "color": "#E0F7FA",
     "popularity": 7,
@@ -2166,7 +2168,7 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區益民路二段339號",
-    "lat": 24.3672,
+    "lat": 24.0836,
     "lng": 120.6855,
     "hours": "06:00–13:00",
     "closedDay": "不定休",
@@ -2192,5 +2194,39 @@
     "chain": false,
     "photo": "/photos/tc067.jpg",
     "hook": "NT$20炒麵NT$50排骨飯，大里最佛心早餐，吃飽還找得到零錢"
+  },
+  {
+    "id": "tc068",
+    "name": "早安有喜",
+    "nameEn": "Good Morning Lucky Breakfast",
+    "city": "台中市",
+    "district": "西屯區",
+    "region": "台中",
+    "address": "台中市西屯區福科路附近",
+    "lat": 24.1672,
+    "lng": 120.6254,
+    "hours": "05:30–11:30",
+    "closedDay": "週日",
+    "types": [
+      "egg",
+      "drink"
+    ],
+    "tags": [
+      "燒餅油條",
+      "鹹豆漿",
+      "蛋餅",
+      "早安有喜"
+    ],
+    "specialty": "燒餅夾油條、鹹豆漿、蛋餅",
+    "price": "30–80",
+    "desc": "台中在地人熟悉的早安有喜，清晨五點半就飄出豆漿香。燒餅現烤外酥內軟，鹹豆漿加油條是標準配法，蛋餅口味多樣，是西屯區上班族和學生的每日早晨補給站。",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF9C4",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": true,
+    "photo": "/photos/tc068.jpg",
+    "hook": "西屯熟悉的那個早安有喜，豆漿燒餅的早晨儀式感滿分"
   }
 ]

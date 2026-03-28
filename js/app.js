@@ -1,5 +1,6 @@
 // ── MORNING TW — App ──
 import { initMap, renderMarkers, focusShop, resetView, invalidateSize } from './map.js';
+import { initAuth, onAuthChange, loginWithGoogle, logout, getUser } from './auth.js';
 
 // Supabase 懶加載，不阻塞主程式
 let _supabase = null;
@@ -9,12 +10,19 @@ async function getSupabase() {
     _supabase = await import('./supabase.js');
   } catch(e) {
     console.warn('Supabase 載入失敗，留言板暫時停用', e);
-    _supabase = { fetchComments: async () => [], addComment: async () => { throw new Error('offline'); } };
+    _supabase = {
+      fetchComments: async () => [],
+      addComment: async () => { throw new Error('offline'); },
+      loadFavsCloud: async () => [],
+      saveFavsCloud: async () => {},
+    };
   }
   return _supabase;
 }
 async function fetchComments(id) { return (await getSupabase()).fetchComments(id); }
 async function addComment(payload) { return (await getSupabase()).addComment(payload); }
+async function loadFavsCloud(uid) { return (await getSupabase()).loadFavsCloud(uid); }
+async function saveFavsCloud(uid, ids) { return (await getSupabase()).saveFavsCloud(uid, ids); }
 
 const TYPE_LABELS = {
   egg:         { label: '蛋餅',   icon: '🍳', cls: 'tag--egg' },
@@ -84,7 +92,6 @@ const bottomSheet   = document.getElementById('bottom-sheet');
   allData = await res.json();
   window._morningTWData = allData;
   window.dispatchEvent(new CustomEvent('morning:dataLoaded', { detail: allData }));
-  // Update hero shop count dynamically
   const browseLink = document.querySelector('.hero__browse');
   if (browseLink) browseLink.textContent = `瀏覽全部 ${allData.length} 間早餐店 ↓`;
 
@@ -93,6 +100,10 @@ const bottomSheet   = document.getElementById('bottom-sheet');
   tryAutoLocate();
   setupEvents();
 
+  // Auth 初始化
+  await initAuth();
+  onAuthChange(handleAuthChange);
+
   // AI recommender: 開啟店家 sheet
   window.addEventListener('ai:openShop', e => {
     const shop = allData.find(s => s.id === e.detail);
@@ -100,12 +111,59 @@ const bottomSheet   = document.getElementById('bottom-sheet');
   });
 })();
 
+// ── AUTH HANDLER ──
+async function handleAuthChange(user) {
+  updateNavAuth(user);
+  if (user) {
+    // 登入時：合併 localStorage 收藏 + 雲端收藏
+    const cloud = await loadFavsCloud(user.id);
+    const merged = [...new Set([...favorites, ...cloud])];
+    favorites = merged;
+    saveFavs();
+    await saveFavsCloud(user.id, favorites);
+    renderList(filtered.length ? filtered : allData);
+  }
+}
+
+function updateNavAuth(user) {
+  const navAuth = document.getElementById('nav-auth');
+  if (!navAuth) return;
+  if (user) {
+    const avatar = user.user_metadata?.avatar_url;
+    const name = user.user_metadata?.full_name || user.email || '會員';
+    navAuth.innerHTML = `
+      <button class="nav__avatar" id="btn-member" title="${name}" aria-label="會員資料">
+        ${avatar
+          ? `<img src="${avatar}" alt="${name}" class="nav__avatar-img">`
+          : `<span class="nav__avatar-initial">${name[0]}</span>`
+        }
+      </button>`;
+    document.getElementById('btn-member')?.addEventListener('click', () => openMemberPanel(user));
+  } else {
+    navAuth.innerHTML = `<button class="nav__login-btn" id="btn-login">登入</button>`;
+    document.getElementById('btn-login')?.addEventListener('click', handleLogin);
+  }
+}
+
+async function handleLogin() {
+  const btn = document.getElementById('btn-login');
+  if (btn) { btn.textContent = '連接中…'; btn.disabled = true; }
+  try {
+    await loginWithGoogle();
+  } catch {
+    if (btn) { btn.textContent = '登入'; btn.disabled = false; }
+    showToast('登入失敗，請稍後再試');
+  }
+}
+
 // ── FAVORITES ──
 function saveFavs() { localStorage.setItem('mw_favs', JSON.stringify(favorites)); }
 function isFav(id) { return favorites.includes(id); }
 function toggleFav(id) {
   favorites = isFav(id) ? favorites.filter(x => x !== id) : [...favorites, id];
   saveFavs();
+  const user = getUser();
+  if (user) saveFavsCloud(user.id, favorites);
 }
 
 // ── AUTO LOCATE ──
@@ -192,6 +250,7 @@ function applyFilters() {
   })();
 
   filtered.sort((a, b) => {
+    if (a.sponsored !== b.sponsored) return a.sponsored ? -1 : 1; // 贊助商置頂
     if (a.chain !== b.chain) return a.chain ? 1 : -1;
     return sortFn(a, b);
   });
@@ -247,9 +306,11 @@ function renderList(data) {
     const open = isOpenNow(s.hours);
     const distBadge = s.dist !== null ? `<span class="shop-card__dist">${fmtDist(s.dist)}</span>` : '';
     const favIcon = isFav(s.id) ? '❤️' : '🤍';
-    const featuredBadge = s.userFavorite
-      ? `<span class="shop-card__featured shop-card__featured--fav">♥ 編輯精選</span>`
-      : s.featured ? `<span class="shop-card__featured">精選</span>` : '';
+    const featuredBadge = s.sponsored
+      ? `<span class="shop-card__featured shop-card__featured--sponsored">✦ 贊助推薦</span>`
+      : s.userFavorite
+        ? `<span class="shop-card__featured shop-card__featured--fav">♥ 編輯精選</span>`
+        : s.featured ? `<span class="shop-card__featured">精選</span>` : '';
 
     return `
       <div class="shop-card${s.chain ? ' shop-card--chain' : ''}${!open ? ' shop-card--closed' : ''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.nameEn || s.name}">
@@ -700,6 +761,80 @@ function setupEvents() {
       if (shop) openSheet({ ...shop, dist: null });
     }, 800);
   }
+}
+
+// ── MEMBER PANEL ──
+function openMemberPanel(user) {
+  const overlay = document.getElementById('member-overlay');
+  const panel   = document.getElementById('member-panel');
+  if (!overlay || !panel) return;
+
+  const avatar  = user.user_metadata?.avatar_url;
+  const name    = user.user_metadata?.full_name || user.email || '早鳥會員';
+  const email   = user.email || '';
+  const favCount = favorites.length;
+  const isPremium = false; // TODO: 串接付費系統後改為真實狀態
+
+  panel.innerHTML = `
+    <div class="member-panel__header">
+      <button class="member-panel__close" id="btn-member-close">✕</button>
+    </div>
+    <div class="member-panel__profile">
+      ${avatar
+        ? `<img src="${avatar}" alt="${name}" class="member-panel__avatar">`
+        : `<div class="member-panel__avatar member-panel__avatar--initial">${name[0]}</div>`
+      }
+      <div class="member-panel__name">${name}</div>
+      <div class="member-panel__email">${email}</div>
+      <div class="member-panel__tier ${isPremium ? 'member-panel__tier--gold' : ''}">
+        ${isPremium ? '✦ 金牌早鳥' : '☆ 早鳥會員'}
+      </div>
+    </div>
+    <div class="member-panel__stats">
+      <div class="member-stat">
+        <div class="member-stat__num">${favCount}</div>
+        <div class="member-stat__label">已收藏</div>
+      </div>
+      <div class="member-stat">
+        <div class="member-stat__num">∞</div>
+        <div class="member-stat__label">可查看</div>
+      </div>
+    </div>
+    ${!isPremium ? `
+    <div class="member-panel__upgrade">
+      <div class="upgrade-card">
+        <div class="upgrade-card__badge">✦ 金牌早鳥</div>
+        <div class="upgrade-card__title">解鎖更多早餐特權</div>
+        <ul class="upgrade-card__perks">
+          <li>🔐 隱藏版店家獨家看</li>
+          <li>🎟 會員專屬折扣碼</li>
+          <li>🤖 無限 AI 推薦</li>
+          <li>📬 每月早餐月刊</li>
+        </ul>
+        <button class="upgrade-card__btn" id="btn-upgrade">NT$99/月 立即升級</button>
+      </div>
+    </div>` : ''}
+    <button class="member-panel__logout" id="btn-logout">登出</button>
+  `;
+
+  overlay.classList.add('member-overlay--open');
+  panel.classList.add('member-panel--open');
+
+  document.getElementById('btn-member-close')?.addEventListener('click', closeMemberPanel);
+  overlay.addEventListener('click', closeMemberPanel, { once: true });
+  document.getElementById('btn-logout')?.addEventListener('click', async () => {
+    await logout();
+    closeMemberPanel();
+    showToast('已登出');
+  });
+  document.getElementById('btn-upgrade')?.addEventListener('click', () => {
+    showToast('升級功能即將推出，敬請期待！');
+  });
+}
+
+function closeMemberPanel() {
+  document.getElementById('member-overlay')?.classList.remove('member-overlay--open');
+  document.getElementById('member-panel')?.classList.remove('member-panel--open');
 }
 
 // ── OPEN STATUS ──

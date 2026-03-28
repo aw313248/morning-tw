@@ -28,3 +28,26 @@ export async function addComment({ shopId, nickname, content, rating }) {
   if (error) throw error;
   return data;
 }
+
+// ── 雲端收藏同步 ──
+// 需要建立 Supabase table:
+//   CREATE TABLE user_favorites (
+//     user_id TEXT PRIMARY KEY,
+//     fav_ids JSONB DEFAULT '[]',
+//     updated_at TIMESTAMPTZ DEFAULT NOW()
+//   );
+export async function loadFavsCloud(userId) {
+  const { data } = await supabase
+    .from('user_favorites')
+    .select('fav_ids')
+    .eq('user_id', userId)
+    .single();
+  return Array.isArray(data?.fav_ids) ? data.fav_ids : [];
+}
+
+export async function saveFavsCloud(userId, favIds) {
+  const { error } = await supabase
+    .from('user_favorites')
+    .upsert({ user_id: userId, fav_ids: favIds, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+  if (error) console.warn('saveFavsCloud:', error);
+}
