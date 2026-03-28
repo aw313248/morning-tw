@@ -38,7 +38,6 @@
       <a href="#map-section">地圖</a>
     </nav>
     <div class="nav__right">
-      <button id="btn-dark" class="nav__icon-btn" title="深色模式">🌙</button>
       <a href="#hero" class="nav__cta">找早餐 ↑</a>
     </div>
   </header>
@@ -48,7 +47,7 @@
     <div class="hero__inner">
       <div class="hero__badge">🥚 台中早餐地圖</div>
       <h1 class="hero__title">MORNING TW<br><em>找早餐</em></h1>
-      <p class="hero__desc">台中人自己整理的在地早餐。傳統老店、市場早點、在地限定。<br>讓外縣市人看了羨慕的台中早晨。</p>
+      <p class="hero__desc">台中人自己整理的在地早餐。傳統老店、市場早點、在地限定。</p>
 
       <!-- BIG SEARCH -->
       <div class="hero__search" role="search">
@@ -56,7 +55,7 @@
         <input
           id="search-input"
           type="search"
-          placeholder="搜尋店名、地區或食物..."
+          placeholder="搜尋店名或食物..."
           autocomplete="off"
           aria-label="搜尋早餐店"
         >
@@ -79,25 +78,28 @@
   <section class="list-section" id="list-section">
     <div class="list-section__inner">
 
-      <!-- RADIUS FILTER — 有定位時才顯示 -->
-      <div class="radius-bar" id="radius-bar" style="display:none">
-        <span class="sort-bar__label">範圍</span>
-        <button class="sort-tab" data-radius="0.1">100 公尺</button>
-        <button class="sort-tab" data-radius="0.3">300 公尺</button>
-        <button class="sort-tab" data-radius="0.5">500 公尺</button>
-        <button class="sort-tab" data-radius="1">1 公里</button>
-        <button class="sort-tab sort-tab--active" data-radius="all">全台中</button>
+      <!-- NEARBY STRIP — 永遠顯示，點選即定位 -->
+      <div class="nearby-strip" id="nearby-strip">
+        <div class="nearby-strip__loc" id="nearby-loc-btn">
+          <span class="nearby-strip__dot" id="nearby-dot"></span>
+          <span class="nearby-strip__loc-label" id="nearby-loc-label">點選定位</span>
+        </div>
+        <div class="nearby-strip__radii" id="radius-bar">
+          <button class="nearby-btn" data-radius="0.3">300m</button>
+          <button class="nearby-btn nearby-btn--md" data-radius="0.5">500m</button>
+          <button class="nearby-btn" data-radius="1">1km</button>
+          <button class="nearby-btn nearby-btn--all nearby-btn--active" data-radius="all">全部</button>
+        </div>
       </div>
 
       <!-- SORT BAR -->
       <div class="sort-bar" id="sort-bar">
-        <span class="sort-bar__label">排序</span>
         <button class="sort-tab sort-tab--active" data-sort="popular">🔥 人氣</button>
         <button class="sort-tab" data-sort="featured">⭐ 精選</button>
         <button class="sort-tab" data-sort="distance">📍 距離</button>
-        <span class="sort-bar__label" style="margin-left:8px">篩選</span>
-        <button class="sort-tab" id="btn-open-now">🕐 現在開門</button>
-        <button class="sort-tab" id="btn-favs-filter" onclick="document.querySelector('[data-type=favorites]')?.click()">❤️ 我的收藏</button>
+        <span class="sort-bar__sep"></span>
+        <button class="sort-tab" id="btn-open-now">🕐 現在營業</button>
+        <button class="sort-tab" id="btn-favs-filter">❤️ 收藏</button>
       </div>
 
       <!-- FILTER BAR -->
@@ -108,11 +110,13 @@
           <button class="chip chip--cat" data-type="western">🥐 西式</button>
           <button class="chip chip--cat" data-type="favorites">❤️ 收藏</button>
           <span class="chip-divider">|</span>
-          <button class="chip chip--sub" data-type="egg">蛋餅燒餅</button>
-          <button class="chip chip--sub" data-type="rice">飯糰粥</button>
+          <button class="chip chip--sub" data-type="egg">蛋餅</button>
+          <button class="chip chip--sub" data-type="rice">飯糰</button>
           <button class="chip chip--sub" data-type="soup">湯品</button>
-          <button class="chip chip--sub" data-type="local">在地特色</button>
-          <button class="chip chip--sub" data-type="drink">豆漿飲料</button>
+          <button class="chip chip--sub" data-type="local">在地</button>
+          <button class="chip chip--sub" data-type="drink">豆漿</button>
+          <span class="chip-divider">|</span>
+          <button class="chip chip--sub chip--ac" data-type="ac">❄️ 有冷氣</button>
         </div>
         <div class="filter-bar__chips" id="district-chips" style="margin-top:8px">
           <button class="chip chip--district chip--active" data-district="all">全台中</button>
@@ -168,8 +172,8 @@
     <button class="bnav__item" onclick="document.getElementById('search-input').focus();window.scrollTo({top:0,behavior:'smooth'})">
       <span>🔍</span>搜尋
     </button>
-    <button class="bnav__item" onclick="document.getElementById('btn-locate').click()">
-      <span>📍</span>附近
+    <button class="bnav__item" onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})">
+      <span>🗺️</span>地圖
     </button>
   </nav>
 

@@ -24,13 +24,16 @@
     "specialty": "厚肉蛋餅、鐵板滋味套餐",
     "price": "65–130",
     "desc": "南區文心南十路上的質感早午餐，Instagram @mffoodfood。招牌鐵板系列口味層次豐富，厚肉餅外酥內嫩，環境簡約好拍，是南區人口耳相傳的私藏早餐首選。",
+    "descEn": "A photogenic artisan breakfast spot tucked in South District. Their iron-griddle series features a thick pork patty — crispy outside, juicy inside. Popular with locals and worth the hunt. Check Instagram @mffoodfood.",
+    "specialtyEn": "Thick pork iron-griddle set, hand-rolled egg crepe",
     "featured": true,
     "userFavorite": true,
     "popularity": 9,
     "icon": "🍳",
     "color": "#FFF8E1",
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc024.jpg"
   },
   {
     "id": "tc001",
@@ -58,12 +61,15 @@
     "specialty": "手工包子、飯糰、現磨豆漿",
     "price": "25–60",
     "desc": "台中第五市場內的老字號，在地飄香60年。手工現做的包子皮薄餡多，飯糰料實在，搭配現磨豆漿，全餐不到百元。是台中人最懷念的早晨滋味。",
+    "descEn": "60-year-old institution inside Taichung's 5th Market. Handmade steamed buns (包子 bāozi), rice rolls, and freshly ground soy milk — all under NT$100. The real deal for traditional Taiwanese morning food.",
+    "specialtyEn": "Handmade steamed buns, rice roll (rice + oil stick + pork floss), soy milk",
     "featured": true,
     "icon": "🍳",
     "color": "#FFF3E0",
     "popularity": 8,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc001.jpg"
   },
   {
     "id": "tc002",
@@ -93,7 +99,8 @@
     "color": "#FFF8E1",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc002.jpg"
   },
   {
     "id": "tc003",
@@ -124,7 +131,8 @@
     "color": "#F3E5F5",
     "popularity": 9,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc003.jpg"
   },
   {
     "id": "tc004",
@@ -151,12 +159,15 @@
     "specialty": "菜頭粿湯、豬血湯",
     "price": "35–70",
     "desc": "台中第二市場百年老攤，以菜頭粿湯聞名。米漿製成的菜頭粿口感Q彈，搭配豬骨湯底，是台中中區最純正的古早味早點，入口即化。",
+    "descEn": "A century-old stall in Taichung's 2nd Market. 菜頭粿湯 (cài tóu guǒ tāng) is a uniquely Taiwanese breakfast — chewy rice-paste daikon cakes simmered in pork bone broth. You won't find this outside Taiwan.",
+    "specialtyEn": "Daikon rice cake soup (daikon cakes in pork broth), pig blood soup",
     "featured": true,
     "icon": "🥣",
     "color": "#E0F7FA",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc004.jpg"
   },
   {
     "id": "tc005",
@@ -184,12 +195,15 @@
     "specialty": "裹粉紅燒肉、豬血湯",
     "price": "50–100",
     "desc": "台中第一市場已有百年歷史，早上最熱鬧。市場內的老攤紅燒肉，裹粉油炸後淋上特製醬汁，配上豬血湯，是台中最道地、外縣市人完全沒見過的早餐。",
+    "descEn": "100-year-old 1st Market in central Taichung. The star is 紅燒肉 (hóng shāo ròu) — battered and fried pork pieces with a savory glaze. Paired with pig blood soup. This is not in any tourist guide; only locals know.",
+    "specialtyEn": "Battered fried pork (Taiwanese red-braised style), pig blood soup",
     "featured": true,
     "icon": "🍙",
     "color": "#FBE9E7",
     "popularity": 9,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc005.jpg"
   },
   {
     "id": "tc006",
@@ -221,7 +235,8 @@
     "color": "#E3F2FD",
     "popularity": 6,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc006.jpg"
   },
   {
     "id": "tc007",
@@ -253,7 +268,8 @@
     "color": "#E8F5E9",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc007.jpg"
   },
   {
     "id": "tc008",
@@ -285,7 +301,8 @@
     "color": "#FFF9C4",
     "popularity": 6,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc008.jpg"
   },
   {
     "id": "tc009",
@@ -316,7 +333,8 @@
     "color": "#EDE7F6",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc009.jpg"
   },
   {
     "id": "tc010",
@@ -342,12 +360,15 @@
     "specialty": "台式飯糰（油條＋肉鬆＋酸菜）",
     "price": "40–70",
     "desc": "逢甲大學商圈的早餐老店，台式飯糰用溫熱糯米包入油條、肉鬆、酸菜、滷蛋，是工程師與學生最愛的手持早餐，每天上萬顆飯糰賣光。",
+    "descEn": "Near Fengjia University. Taiwanese rice rolls (飯糰 fàn tuán) are different from Japanese onigiri: warm glutinous rice packed with a fried cruller, dried pork floss, pickled mustard and marinated egg. A hand-held breakfast ritual.",
+    "specialtyEn": "Taiwanese rice roll: glutinous rice + fried cruller + pork floss + pickled greens",
     "featured": true,
     "icon": "🍙",
     "color": "#E0F7FA",
     "popularity": 9,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc010.jpg"
   },
   {
     "id": "tc011",
@@ -379,7 +400,8 @@
     "color": "#E8F5E9",
     "popularity": 7,
     "category": "western",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc011.jpg"
   },
   {
     "id": "tc012",
@@ -410,7 +432,8 @@
     "color": "#FFF3E0",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc012.jpg"
   },
   {
     "id": "tc013",
@@ -442,7 +465,8 @@
     "color": "#FBE9E7",
     "popularity": 6,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc013.jpg"
   },
   {
     "id": "tc014",
@@ -474,7 +498,8 @@
     "color": "#FFF8E1",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc014.jpg"
   },
   {
     "id": "tc015",
@@ -506,7 +531,8 @@
     "color": "#E0F7FA",
     "popularity": 6,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc015.jpg"
   },
   {
     "id": "tc016",
@@ -533,12 +559,15 @@
     "specialty": "燒餅油條、豬肉餡餅、鹹豆漿",
     "price": "30–70",
     "desc": "1983年創立，南區飄香超過40年。燒餅油條被在地人封為南區最好吃，豬肉餡餅皮薄多汁，蔥肉餅香氣逼人。每天大排長龍，餡餅10點前就常售罄，要早點去。",
+    "descEn": "Open since 1983 — 40+ years in South District. Voted the best 燒餅油條 (shāo bǐng yóu tiáo) in the neighborhood: sesame flatbread with a fried cruller inside. The pork stuffed pastry sells out before 10am — go early.",
+    "specialtyEn": "Sesame flatbread + fried cruller (classic duo), pork-filled pastry, green onion cake",
     "featured": true,
     "icon": "🍳",
     "color": "#FFF8E1",
     "popularity": 9,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc016.jpg"
   },
   {
     "id": "tc017",
@@ -571,7 +600,8 @@
     "color": "#F3E5F5",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc017.jpg"
   },
   {
     "id": "tc018",
@@ -603,7 +633,8 @@
     "color": "#E8F5E9",
     "popularity": 8,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc018.jpg"
   },
   {
     "id": "tc019",
@@ -629,12 +660,15 @@
     "specialty": "每日限量溏心蛋豬排飯糰（預訂）",
     "price": "40–70",
     "desc": "復興路上的隱藏版飯糰店，每日限量溏心蛋豬排飯糰20顆，需提前預訂。紫米與白米混合的飯糰口感特殊，溏心蛋流心完美，是南區最有個性的早餐之一。",
+    "descEn": "A hidden gem on Fuxing Rd. Only 20 rice rolls made per day — pre-order required. Purple + white glutinous rice rolled with a runny-yolk egg and pork chop. The most creative rice roll in South Taichung.",
+    "specialtyEn": "Daily-limited runny-egg pork chop rice roll (pre-order), purple glutinous rice base",
     "featured": true,
     "icon": "🍙",
     "color": "#EDE7F6",
     "popularity": 8,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc019.jpg"
   },
   {
     "id": "tc020",
@@ -666,7 +700,8 @@
     "color": "#FFF9C4",
     "popularity": 8,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc020.jpg"
   },
   {
     "id": "tc021",
@@ -699,7 +734,8 @@
     "color": "#E0F2F1",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc021.jpg"
   },
   {
     "id": "tc022",
@@ -731,7 +767,8 @@
     "color": "#FFF3E0",
     "popularity": 8,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc022.jpg"
   },
   {
     "id": "tc023",
@@ -758,11 +795,656 @@
     "specialty": "陽春麵（40元）、手工餛飩麵、魚丸湯",
     "price": "40–80",
     "desc": "南屯老街超過60年的老麵店，餛飩與魚丸全是自製。陽春麵一碗40元，肉燥份量豪邁，是外地人來南屯老街必吃的名店。早上就開賣，到訪南屯的第一站。",
+    "descEn": "60+ years old, on Nantun's historic old street. Hand-made wontons and fish balls, simple noodles (陽春麵 NT$40). Opens in the morning. A must-visit if you're exploring the Nantun old neighborhood.",
+    "specialtyEn": "Plain noodles with pork sauce, hand-made wonton noodle soup, fish ball soup",
     "featured": false,
     "icon": "🥣",
     "color": "#E3F2FD",
     "popularity": 7,
     "category": "traditional",
-    "chain": false
+    "chain": false,
+    "photo": "/photos/tc023.jpg"
+  },
+  {
+    "id": "tc025",
+    "name": "小時候蛋餅 高工店",
+    "nameEn": "Childhood Egg Pancake Gaogong",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區高工路140號",
+    "lat": 24.1148,
+    "lng": 120.6785,
+    "hours": "05:30–12:30",
+    "closedDay": "週一",
+    "types": [
+      "egg",
+      "drink"
+    ],
+    "tags": [
+      "粉漿蛋餅",
+      "口味多",
+      "銅板早餐",
+      "南區高工路"
+    ],
+    "specialty": "粉漿蛋餅、蔥油餅、豆漿",
+    "price": "35–70",
+    "desc": "南區高工路上平民早餐店，粉漿蛋餅皮薄Q彈，多種口味任選。早上五點半就開始飄香，是附近住戶、工廠員工每天報到的早晨好夥伴，CP值極高。",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF3E0",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc025.png"
+  },
+  {
+    "id": "tc026",
+    "name": "揚平燒餅專賣店",
+    "nameEn": "Yang Ping Shao Bing",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區建成路1034號",
+    "lat": 24.1261,
+    "lng": 120.6768,
+    "hours": "06:00–11:00",
+    "closedDay": "週二",
+    "types": [
+      "egg"
+    ],
+    "tags": [
+      "燒餅",
+      "豬肉餡餅",
+      "蔥抓餅",
+      "南區建成路"
+    ],
+    "specialty": "燒餅夾蛋、豬肉餡餅、蔥抓餅",
+    "price": "35–75",
+    "desc": "南區建成路上的燒餅專門店，麵糰現桿現烤，餡餅皮薄多汁，外皮酥脆帶芝麻香。是建成路沿線最受歡迎的燒餅選項之一，附近上班族每天排隊。",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF8E1",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc026.jpg"
+  },
+  {
+    "id": "tc027",
+    "name": "陳記早點",
+    "nameEn": "Chen Ji Breakfast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區建成路1737號",
+    "lat": 24.1218,
+    "lng": 120.6773,
+    "hours": "06:30–10:30",
+    "closedDay": "週六、週日",
+    "types": [
+      "egg",
+      "rice"
+    ],
+    "tags": [
+      "蛋餅",
+      "飯糰",
+      "碗糕",
+      "南區老滋味"
+    ],
+    "specialty": "蛋餅、飯糰、碗糕",
+    "price": "25–55",
+    "desc": "南區建成路巷弄內的傳統早餐，老阿嬤守的攤位，手工碗糕扎實入味，蛋餅用的是傳統粉漿配方。平日六點半一開門就座無虛席，是附近居民的家常早餐。",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF3E0",
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc027.jpg"
+  },
+  {
+    "id": "tc028",
+    "name": "鄉村漢堡早餐",
+    "nameEn": "Country Burger Breakfast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區建成路1850號",
+    "lat": 24.1205,
+    "lng": 120.6775,
+    "hours": "05:30–11:00",
+    "closedDay": "週三",
+    "types": [
+      "egg",
+      "drink"
+    ],
+    "tags": [
+      "漢堡",
+      "三明治",
+      "豆漿",
+      "南區早餐"
+    ],
+    "specialty": "鄉村漢堡、培根蛋三明治、鮮奶茶",
+    "price": "40–85",
+    "desc": "南區建成路靠近高工路的早餐店，漢堡麵包鬆軟現烤，蛋料給得大方，飲料選擇豐富。是南區南端居民的早晨首選，五點半就開門，趕著上班的都來這裡解決早餐。",
+    "featured": false,
+    "icon": "🥐",
+    "color": "#E8F5E9",
+    "popularity": 6,
+    "category": "western",
+    "chain": false,
+    "photo": "/photos/tc028.jpg"
+  },
+  {
+    "id": "tc029",
+    "name": "阿母古早味粉漿蛋餅",
+    "nameEn": "A-Mu Traditional Egg Pancake",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區信義南街351號",
+    "lat": 24.1278,
+    "lng": 120.6865,
+    "hours": "06:30–13:30",
+    "closedDay": "週二",
+    "types": [
+      "egg"
+    ],
+    "tags": [
+      "粉漿蛋餅",
+      "古早味",
+      "麵糊配方",
+      "南區信義路"
+    ],
+    "specialty": "粉漿蛋餅（古早味麵糊配方）",
+    "price": "30–60",
+    "desc": "信義南街上堅持古早味的蛋餅攤，只賣粉漿蛋餅，麵糊是阿母傳下來的配方，蛋餅皮微焦帶麵香，比一般蛋餅厚實有嚼勁，是南區蛋餅控心目中的隱藏版正宗口味。",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF8E1",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc029.jpg"
+  },
+  {
+    "id": "tc030",
+    "name": "好食飯糰",
+    "nameEn": "Good Food Rice Ball",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區有恆街130號",
+    "lat": 24.1335,
+    "lng": 120.6763,
+    "hours": "06:30–11:00",
+    "closedDay": "週一",
+    "types": [
+      "rice"
+    ],
+    "tags": [
+      "台式飯糰",
+      "油條",
+      "肉鬆",
+      "南區飯糰"
+    ],
+    "specialty": "台式飯糰（油條＋肉鬆＋酸菜）、鹹豆漿",
+    "price": "35–65",
+    "desc": "南區有恆街的飯糰專賣店，溫熱糯米包入現炸油條、肉鬆、酸菜與半熟滷蛋，口感扎實滿足。常在七點前就賣光，需要早到。每天現做，不加防腐劑，是南區媽媽最放心的學生早餐。",
+    "featured": false,
+    "icon": "🍙",
+    "color": "#E0F7FA",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc030.jpg"
+  },
+  {
+    "id": "tc031",
+    "name": "祥嘉義米糕",
+    "nameEn": "Xiang Jia Yi Rice Cake",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區合作街54號",
+    "lat": 24.1237,
+    "lng": 120.6742,
+    "hours": "05:30–13:30",
+    "closedDay": "週四",
+    "types": [
+      "rice",
+      "local"
+    ],
+    "tags": [
+      "筒仔米糕",
+      "嘉義口味",
+      "肉燥",
+      "南區老口味"
+    ],
+    "specialty": "筒仔米糕、豬血湯、滷肉飯",
+    "price": "35–75",
+    "desc": "南區合作街上的嘉義風味米糕老攤，糯米用豬油與肉燥炊製，淋上特製醬油膏與蒜泥，配上豬血湯一套不到80元。在地人吃了幾十年的早午餐選擇，五點半就開始賣。",
+    "featured": false,
+    "icon": "🍙",
+    "color": "#FBE9E7",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc031.jpg"
+  },
+  {
+    "id": "tc032",
+    "name": "南門路傳統早點",
+    "nameEn": "Nanmen Traditional Breakfast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區南門路66號",
+    "lat": 24.1356,
+    "lng": 120.6831,
+    "hours": "05:30–10:30",
+    "closedDay": "週二",
+    "types": [
+      "egg",
+      "drink"
+    ],
+    "tags": [
+      "蔥油餅",
+      "豆漿",
+      "傳統早點",
+      "南門路"
+    ],
+    "specialty": "蔥油餅夾蛋、鹹豆漿、油條",
+    "price": "30–65",
+    "desc": "南門路上的傳統早點攤，手工現桿蔥油餅，蔥香四溢，夾上半熟蛋是招牌吃法。鹹豆漿現磨現煮，配上剛起鍋的油條，是南區最道地的台式早晨滋味。",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF3E0",
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc032.jpg"
+  },
+  {
+    "id": "tc033",
+    "name": "忠孝路早餐店",
+    "nameEn": "Zhongxiao Breakfast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區忠孝路四段630號",
+    "lat": 24.1188,
+    "lng": 120.6718,
+    "hours": "05:30–10:30",
+    "closedDay": "週日",
+    "types": [
+      "egg",
+      "rice"
+    ],
+    "tags": [
+      "炒蛋飯",
+      "蛋餅",
+      "南區南端",
+      "忠孝路"
+    ],
+    "specialty": "炒蛋飯、傳統蛋餅、飯糰",
+    "price": "30–60",
+    "desc": "南區忠孝路南端的傳統早餐，炒蛋飯是特色，現炒大火香氣足，份量給得實在。位於住宅區底，是附近國中、小學旁最受學生與家長喜愛的平價早餐選擇。",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF3E0",
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc033.jpg"
+  },
+  {
+    "id": "tc034",
+    "name": "復興路二段豆漿店",
+    "nameEn": "Fuxing Soy Milk Breakfast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區復興路二段320號",
+    "lat": 24.134,
+    "lng": 120.6851,
+    "hours": "05:00–11:00",
+    "closedDay": "週一",
+    "types": [
+      "drink",
+      "egg"
+    ],
+    "tags": [
+      "鹹豆漿",
+      "燒餅油條",
+      "現磨豆漿",
+      "復興路"
+    ],
+    "specialty": "鹹豆漿、燒餅油條、米漿",
+    "price": "30–60",
+    "desc": "南區復興路二段的傳統豆漿早點鋪，清晨五點就飄出豆香。鹹豆漿加入蝦皮、油條碎與醋，口感濃稠鮮鹹，是南區老台中人心目中最正宗的起床第一口。",
+    "featured": false,
+    "icon": "☕",
+    "color": "#FFF8E1",
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc034.jpg"
+  },
+  {
+    "id": "tc035",
+    "name": "美村路二段傳統早點",
+    "nameEn": "Meicun Traditional Breakfast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區美村路二段250號",
+    "lat": 24.1315,
+    "lng": 120.664,
+    "hours": "06:00–11:00",
+    "closedDay": "週三",
+    "types": [
+      "egg",
+      "soup"
+    ],
+    "tags": [
+      "水煎包",
+      "蛋餅",
+      "米粉湯",
+      "美村路"
+    ],
+    "specialty": "水煎包、粉漿蛋餅、米粉湯",
+    "price": "25–60",
+    "desc": "美村路二段上的傳統早點，水煎包是招牌，底部煎得金黃酥脆，豬肉餡鮮甜多汁。搭配一碗米粉湯是南區最懷念的早晨組合，在地居民從小吃到大的口味。",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF3E0",
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc035.jpg"
+  },
+  {
+    "id": "tc036",
+    "name": "小辣椒越南麵包",
+    "nameEn": "Little Chili Vietnamese Banh Mi",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區信義南街318號（第三市場內）",
+    "lat": 24.1283,
+    "lng": 120.6863,
+    "hours": "08:00–14:00",
+    "closedDay": "不定休",
+    "types": [
+      "local",
+      "egg"
+    ],
+    "tags": [
+      "越南麵包",
+      "法式麵包",
+      "台灣口味",
+      "第三市場"
+    ],
+    "specialty": "越南麵包（肉醬＋叉燒＋醃菜）",
+    "specialtyEn": "Vietnamese banh mi: baguette filled with pâté, char siu pork & pickled daikon",
+    "price": "40–70",
+    "desc": "台中第三市場內的越南麵包攤，是台灣版越南麵包的在地演化——法式麵包夾入肉醬、叉燒、醃蘿蔔與香菜，酸辣鹹香一口到位，是市場裡最特別的早餐選擇。",
+    "descEn": "A hidden stall inside the 3rd Market serving Taiwanese-style bánh mì. A crusty baguette stuffed with pâté, char siu pork, pickled radish and coriander — a fusion unique to Taiwan's post-war culinary history. A must-try for adventurous eaters.",
+    "featured": false,
+    "icon": "🥐",
+    "color": "#E8F5E9",
+    "popularity": 7,
+    "category": "western",
+    "chain": false,
+    "photo": "/photos/tc036.jpg"
+  },
+  {
+    "id": "tc037",
+    "name": "土木公社碳烤土司",
+    "nameEn": "Earth Society Charcoal Toast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區復興路三段308號",
+    "lat": 24.1265,
+    "lng": 120.684,
+    "hours": "06:30–13:00",
+    "closedDay": "不定休",
+    "types": [
+      "egg",
+      "drink"
+    ],
+    "tags": [
+      "碳烤土司",
+      "肉蛋土司",
+      "蛋餅",
+      "復興路"
+    ],
+    "specialty": "碳烤土司、肉蛋土司、蛋餅",
+    "specialtyEn": "Charcoal-grilled toast sandwich with egg and meat, crispy egg crepe",
+    "price": "35–75",
+    "desc": "南區復興路上的碳烤土司早餐，用炭火慢烤出外酥內軟的吐司，鮮明碳香是特色。肉蛋土司份量大方，是附近學生和上班族的日常早餐選項。",
+    "descEn": "Charcoal-grilled toast is a Taiwanese breakfast staple — the smoky aroma sets it apart from plain toasters. This spot on Fuxing Rd does it well, packing in egg and meat for a satisfying start to the day.",
+    "featured": false,
+    "icon": "🥐",
+    "color": "#FFF8E1",
+    "popularity": 6,
+    "category": "western",
+    "chain": true,
+    "photo": "/photos/tc037.png"
+  },
+  {
+    "id": "tc038",
+    "name": "伍宅晨食",
+    "nameEn": "Wu Zhai Morning Eats",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區和昌街129號",
+    "lat": 24.1292,
+    "lng": 120.6812,
+    "hours": "06:00–12:30",
+    "closedDay": "週三",
+    "types": [
+      "egg",
+      "drink"
+    ],
+    "tags": [
+      "碳烤饅頭",
+      "碳烤土司",
+      "銅板早餐",
+      "南區巷弄"
+    ],
+    "specialty": "碳烤饅頭、碳烤土司",
+    "specialtyEn": "Charcoal-grilled mantou (Chinese steamed bun), charcoal-grilled toast",
+    "price": "30–55",
+    "desc": "南區和昌街的小店，主打碳烤饅頭，這是台灣獨特的早餐形式——傳統中式饅頭用炭火烤至外脆內Q，香氣十足。價格親民，是附近居民的平日早晨首選。",
+    "descEn": "Specialises in charcoal-grilled mantou (碳烤饅頭) — a Taiwanese twist on steamed Chinese buns. Grilling gives them a crispy crust with a soft chewy centre. Budget-friendly and very local.",
+    "featured": false,
+    "icon": "🥐",
+    "color": "#FFF8E1",
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc038.jpg"
+  },
+  {
+    "id": "tc039",
+    "name": "京華中西式早餐",
+    "nameEn": "Jing Hua Chinese-Western Breakfast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區學府路129號",
+    "lat": 24.1339,
+    "lng": 120.6763,
+    "hours": "06:00–12:00",
+    "closedDay": "無",
+    "types": [
+      "egg",
+      "rice"
+    ],
+    "tags": [
+      "水煎餃",
+      "蔥抓餅",
+      "三明治",
+      "學府路"
+    ],
+    "specialty": "水煎餃、蔥抓餅夾蛋",
+    "specialtyEn": "Pan-fried pork dumplings, scallion pancake with egg",
+    "price": "30–70",
+    "desc": "學府路上的中西合璧早餐，水煎餃底部煎得金黃焦脆，內餡扎實，是台灣傳統市場早餐文化的縮影。蔥抓餅現桿現煎，每天開到中午，全年無休。",
+    "descEn": "Pan-fried dumplings (水煎餃) are a Taiwanese specialty — pan-fried until the bottoms caramelize, creating a crispy crust around a juicy pork filling. Very different from the steamed dumplings you may know.",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF3E0",
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc039.jpg"
+  },
+  {
+    "id": "tc040",
+    "name": "胖爹幸福蔬食早午餐",
+    "nameEn": "Fat Daddy Vegetarian Breakfast",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區大慶街二段92號",
+    "lat": 24.1388,
+    "lng": 120.6704,
+    "hours": "05:30–14:00",
+    "closedDay": "週日",
+    "types": [
+      "egg",
+      "local"
+    ],
+    "tags": [
+      "蔬食",
+      "素食友善",
+      "蛋餅",
+      "漢堡"
+    ],
+    "specialty": "素食蛋餅、蔬食漢堡、鐵板麵",
+    "specialtyEn": "Vegetarian egg crepe, veggie burger, iron-plate noodles (all plant-based)",
+    "price": "40–90",
+    "desc": "南區大慶街上的蔬食早午餐，提供全素與蛋奶素選項，讓素食者也能吃到台灣傳統早餐風味。蛋餅、漢堡、鐵板麵一應俱全，是南區少見的蔬食早餐友善選項。",
+    "descEn": "One of the few vegetarian-friendly breakfast spots in South District. Offers plant-based versions of Taiwanese classics: egg crepe, burger, and iron-plate noodles. Great option for vegetarians visiting Taiwan.",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#E8F5E9",
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false,
+    "ac": true,
+    "photo": "/photos/tc040.jpg"
+  },
+  {
+    "id": "tc041",
+    "name": "真好吃廣東粥",
+    "nameEn": "Zheng Hao Chi Cantonese Congee",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區美村南路105-3號",
+    "lat": 24.1322,
+    "lng": 120.6648,
+    "hours": "11:00–01:00",
+    "closedDay": "無",
+    "types": [
+      "soup",
+      "rice"
+    ],
+    "tags": [
+      "廣東粥",
+      "皮蛋瘦肉粥",
+      "豬肝粥",
+      "深夜食堂"
+    ],
+    "specialty": "皮蛋瘦肉粥、豬肝粥、生滾粥",
+    "specialtyEn": "Century egg and pork congee, pork liver congee, Cantonese-style silky rice porridge",
+    "price": "60–120",
+    "desc": "美村南路上的廣東粥名店，以綿密細滑的生滾粥聞名。皮蛋瘦肉粥是招牌，豬肝粥每碗新鮮現滾，粥底濃郁、料理扎實，是南區吃宵夜或晚早餐的好選擇。",
+    "descEn": "Cantonese-style congee (廣東粥) is much silkier than Taiwanese congee — rice is cooked until it dissolves into a smooth porridge. The century egg and pork version is the classic. Open until 1am, good for late risers too.",
+    "featured": false,
+    "icon": "🥣",
+    "color": "#E0F7FA",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "photo": "/photos/tc041.jpg"
+  },
+  {
+    "id": "tc042",
+    "name": "如沐早午餐",
+    "nameEn": "Ru Mu Brunch",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區仁義街67號1樓",
+    "lat": 24.1318,
+    "lng": 120.6812,
+    "hours": "08:00–14:00",
+    "closedDay": "週三",
+    "types": [
+      "egg",
+      "local"
+    ],
+    "tags": [
+      "帕里尼",
+      "薄餅捲",
+      "輕食",
+      "興大商圈"
+    ],
+    "specialty": "帕里尼三明治、薄餅捲、沙拉碗",
+    "specialtyEn": "Panini sandwich, crepe wrap, salad bowl (NT$100–300)",
+    "price": "100–300",
+    "desc": "中興大學旁的輕食早午餐，帕里尼三明治用鑄鐵烙紋烤至外酥，薄餅捲包入多種新鮮配料，是南區興大商圈最受學生歡迎的早午餐選項之一。",
+    "descEn": "A relaxed brunch café near National Chung Hsing University. Paninis, crepe wraps and salad bowls in the NT$100–300 range. Popular with students and young locals. The bilingual menu makes it easy for non-Chinese speakers.",
+    "featured": false,
+    "icon": "🥐",
+    "color": "#E8F5E9",
+    "popularity": 7,
+    "category": "western",
+    "chain": false,
+    "photo": "/photos/tc042.jpg"
+  },
+  {
+    "id": "tc043",
+    "name": "黃阿嬤的小廚房",
+    "nameEn": "Grandma Huang's Kitchen",
+    "city": "台中市",
+    "district": "南區",
+    "region": "台中",
+    "address": "台中市南區國光路（中興大學附近）",
+    "lat": 24.1331,
+    "lng": 120.6781,
+    "hours": "07:00–19:30",
+    "closedDay": "不定休",
+    "types": [
+      "egg",
+      "soup"
+    ],
+    "tags": [
+      "手工蛋餅",
+      "免費魚湯",
+      "興大",
+      "阿嬤廚藝"
+    ],
+    "specialty": "手工蛋餅（內用附贈魚湯）",
+    "specialtyEn": "Handmade egg crepe — free fish broth included for dine-in customers",
+    "price": "30–65",
+    "desc": "中興大學附近的老阿嬤手工蛋餅店，堅持每天手桿麵皮，蛋餅薄而Q韌，內用還附贈一碗魚湯，是附近師生心目中最溫暖的早餐記憶。",
+    "descEn": "An old-school egg crepe stall near NCHU run by a grandma who still hand-rolls every crepe by hand. Dine-in gets a free bowl of fish broth. Warm, home-style, and genuinely local.",
+    "featured": false,
+    "icon": "🍳",
+    "color": "#FFF3E0",
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false,
+    "ac": true,
+    "photo": "/photos/tc043.jpg"
   }
 ]

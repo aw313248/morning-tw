@@ -17,13 +17,13 @@ async function fetchComments(id) { return (await getSupabase()).fetchComments(id
 async function addComment(payload) { return (await getSupabase()).addComment(payload); }
 
 const TYPE_LABELS = {
-  egg:         { label: '蛋餅燒餅',   icon: '🍳', cls: 'tag--egg' },
-  rice:        { label: '飯糰粥',     icon: '🍙', cls: 'tag--rice' },
-  soup:        { label: '湯品',       icon: '🥣', cls: 'tag--soup' },
-  local:       { label: '在地特色',   icon: '🏮', cls: 'tag--local' },
-  drink:       { label: '豆漿飲料',   icon: '☕', cls: 'tag--drink' },
-  traditional: { label: '傳統早餐',   icon: '🍳', cls: 'tag--egg' },
-  western:     { label: '西式早午餐', icon: '🥐', cls: 'tag--local' },
+  egg:         { label: '蛋餅',   icon: '🍳', cls: 'tag--egg' },
+  rice:        { label: '飯糰',   icon: '🍙', cls: 'tag--rice' },
+  soup:        { label: '湯品',   icon: '🥣', cls: 'tag--soup' },
+  local:       { label: '在地',   icon: '🏮', cls: 'tag--local' },
+  drink:       { label: '豆漿',   icon: '☕', cls: 'tag--drink' },
+  traditional: { label: '傳統',   icon: '🍳', cls: 'tag--egg' },
+  western:     { label: '西式',   icon: '🥐', cls: 'tag--local' },
 };
 
 // ── HAVERSINE ──
@@ -68,15 +68,11 @@ const districtChips = document.getElementById('district-chips');
 const sortBar       = document.getElementById('sort-bar');
 const btnLocate     = document.getElementById('btn-locate');
 const btnOpenNow    = document.getElementById('btn-open-now');
-const btnDark       = document.getElementById('btn-dark');
 const sheetOverlay  = document.getElementById('sheet-overlay');
 const bottomSheet   = document.getElementById('bottom-sheet');
 
 // ── INIT ──
 (async () => {
-  // Dark mode
-  if (localStorage.getItem('mw_dark') === '1') document.documentElement.classList.add('dark');
-
   const res = await fetch('data/breakfasts.json');
   allData = await res.json();
   buildMarquee(allData);
@@ -96,24 +92,50 @@ function toggleFav(id) {
 // ── AUTO LOCATE ──
 function tryAutoLocate() {
   if (!navigator.geolocation) { applyFilters(); return; }
-  listEl.innerHTML = `<p class="loading-msg">📍 正在定位中⋯</p>`;
+  // 安靜嘗試定位（不強迫 prompt，maximumAge 讓快取的位置直接使用）
   navigator.geolocation.getCurrentPosition(
     pos => {
       userLat = pos.coords.latitude; userLng = pos.coords.longitude;
       updateLocateBtn(true); applyFilters();
     },
-    () => applyFilters(),
-    { timeout: 5000, maximumAge: 60000 }
+    () => applyFilters(), // 拒絕或逾時 → 正常顯示全部
+    { timeout: 4000, maximumAge: 300000 } // 5 分鐘快取
   );
+  applyFilters(); // 先顯示全部，定位成功後再更新
 }
 
 function updateLocateBtn(located) {
-  if (!btnLocate) return;
-  btnLocate.textContent = located ? '📍 已定位' : '📍 找我附近的';
-  btnLocate.classList.toggle('btn-locate--active', located);
-  // 顯示半徑選擇器
-  const radiusBar = document.getElementById('radius-bar');
-  if (radiusBar) radiusBar.style.display = located ? 'flex' : 'none';
+  if (btnLocate) {
+    btnLocate.textContent = located ? '📍 已定位' : '📍 找我附近的';
+    btnLocate.classList.toggle('btn-locate--active', located);
+  }
+  const dot = document.getElementById('nearby-dot');
+  const label = document.getElementById('nearby-loc-label');
+  if (dot) dot.className = 'nearby-strip__dot' + (located ? ' nearby-strip__dot--located' : '');
+  if (label) label.textContent = located ? '已定位 ✓' : '點選定位';
+}
+
+function setLocating(isLocating) {
+  const dot = document.getElementById('nearby-dot');
+  const label = document.getElementById('nearby-loc-label');
+  if (dot) dot.className = 'nearby-strip__dot' + (isLocating ? ' nearby-strip__dot--loading' : '');
+  if (label) label.textContent = isLocating ? '定位中…' : '點選定位';
+}
+
+// 請求定位，回傳 Promise
+function requestLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) { reject(new Error('no geo')); return; }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        userLat = pos.coords.latitude; userLng = pos.coords.longitude;
+        updateLocateBtn(true); resolve();
+      },
+      err => { setLocating(false); reject(err); },
+      { timeout: 8000, maximumAge: 60000 }
+    );
+  });
 }
 
 // ── FILTERS ──
@@ -125,6 +147,7 @@ function applyFilters() {
       if (activeType === 'all') matchType = true;
       else if (activeType === 'traditional' || activeType === 'western') matchType = s.category === activeType;
       else if (activeType === 'favorites') matchType = isFav(s.id);
+      else if (activeType === 'ac') matchType = s.ac === true;
       else matchType = s.types.includes(activeType);
       const matchDistrict = activeDistrict === 'all' || s.district === activeDistrict;
       const matchSearch = !q ||
@@ -135,7 +158,8 @@ function applyFilters() {
         (s.specialty || '').toLowerCase().includes(q);
       const matchOpen = !showOpenOnly || isOpenNow(s.hours);
       const dist = (userLat && s.lat) ? distKm(userLat, userLng, s.lat, s.lng) : null;
-      const matchRadius = !activeRadius || !userLat || (dist !== null && dist <= activeRadius);
+      // +0.25km 容忍值：店家座標從地址估算，誤差可達 200m
+      const matchRadius = !activeRadius || !userLat || (dist !== null && dist <= activeRadius + 0.25);
       return matchType && matchDistrict && matchSearch && matchOpen && matchRadius;
     })
     .map(s => ({ ...s, dist: (userLat && s.lat) ? distKm(userLat, userLng, s.lat, s.lng) : null }));
@@ -155,8 +179,8 @@ function applyFilters() {
 
   statsCount.textContent = filtered.length;
   if (statsLabel) {
-    const labels = { distance: '間（依距離排序）', featured: '間（官方精選優先）', popular: '間（人氣排行）' };
-    statsLabel.textContent = labels[activeSort] || '間';
+    const labels = { distance: ' 間 · 依距離', featured: ' 間 · 精選優先', popular: ' 間 · 依人氣' };
+    statsLabel.textContent = labels[activeSort] || ' 間';
   }
   renderList(filtered);
   renderMarkers(filtered);
@@ -166,12 +190,12 @@ function applyFilters() {
 function renderList(data) {
   if (!data.length) {
     const radiusHint = activeRadius
-      ? `<br><button class="expand-btn" onclick="document.querySelector('[data-radius=\\'all\\']').click()">📍 放寬到全台中</button>`
+      ? `<br><button class="expand-btn" onclick="document.querySelector('[data-radius=\\'all\\']').click()">📍 顯示全台中</button>`
       : '';
     const radiusMsg = activeRadius
-      ? `<strong>${activeRadius < 1 ? activeRadius * 1000 + ' 公尺' : activeRadius + ' 公里'}內</strong>暫時沒有收錄的早餐店`
+      ? `附近 <strong>${activeRadius < 1 ? activeRadius * 1000 + '公尺' : activeRadius + '公里'}</strong> 內找不到早餐店`
       : '找不到符合的早餐店';
-    listEl.innerHTML = `<p class="loading-msg">${radiusMsg}<br><small>持續新增中，歡迎推薦店家</small>${radiusHint}</p>`;
+    listEl.innerHTML = `<p class="loading-msg">${radiusMsg}<br><small>持續新增中，歡迎投稿推薦！</small>${radiusHint}</p>`;
     return;
   }
   listEl.innerHTML = data.map(s => {
@@ -184,22 +208,26 @@ function renderList(data) {
     const favIcon = isFav(s.id) ? '❤️' : '🤍';
 
     return `
-      <div class="shop-card${s.chain ? ' shop-card--chain' : ''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.name}">
-        <div class="shop-card__icon">${s.icon}</div>
+      <div class="shop-card${s.chain ? ' shop-card--chain' : ''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.nameEn || s.name}">
+        <div class="shop-card__icon">
+          ${s.icon}
+          ${s.photo ? `<img class="shop-card__photo" src="${s.photo}" alt="${s.name}" loading="lazy" onerror="this.remove()">` : ''}
+        </div>
         <div class="shop-card__body">
           <div class="shop-card__name">${s.name}</div>
+          ${s.nameEn ? `<div class="shop-card__name-en">${s.nameEn}</div>` : ''}
           <div class="shop-card__meta">
             <span>${s.district}</span>
             <span class="shop-card__dot">·</span>
             <span class="${open ? 'shop-card__status-open' : 'shop-card__status-close'}">
-              ${open ? '● 開門中' : '○ 休息中'}
+              ${open ? '● 營業中' : '○ 休息'}
             </span>
             ${distBadge ? `<span class="shop-card__dot">·</span>${distBadge}` : ''}
           </div>
           <div class="shop-card__tags">${tags}</div>
         </div>
-        ${s.userFavorite ? '<span class="shop-card__featured shop-card__featured--fav">♥ 主編最愛</span>' : s.featured ? '<span class="shop-card__featured">精選</span>' : ''}
-        <button class="shop-card__fav" data-fav="${s.id}" title="收藏">${favIcon}</button>
+        ${s.userFavorite ? '<span class="shop-card__featured shop-card__featured--fav">♥ 編輯精選</span>' : s.featured ? '<span class="shop-card__featured">精選</span>' : ''}
+        <button class="shop-card__fav" data-fav="${s.id}" title="Save">${favIcon}</button>
       </div>
     `;
   }).join('');
@@ -241,40 +269,57 @@ function openSheet(shop) {
   bottomSheet.innerHTML = `
     <div class="sheet-handle"></div>
     <div class="sheet-body">
+      ${shop.photo ? `<img class="sheet-photo-hero" src="${shop.photo}" alt="${shop.name}" loading="eager" onerror="this.remove()">` : ''}
       <div class="sheet-header-row">
-        <div class="sheet-icon-wrap">${shop.icon}</div>
+        <div class="sheet-icon-wrap">
+          ${shop.icon}
+          ${shop.photo ? `<img class="sheet-icon-photo" src="${shop.photo}" alt="${shop.name}" loading="eager" onerror="this.remove()">` : ''}
+        </div>
         <div class="sheet-header-info">
           <div class="sheet-name">${shop.name}</div>
-          <div class="sheet-location">📍 台中市 ${shop.district}</div>
+          ${shop.nameEn ? `<div class="sheet-name-en">${shop.nameEn}</div>` : ''}
+          <div class="sheet-location">📍 台中 ${shop.district}</div>
         </div>
         <button class="sheet-fav-btn" id="sheet-fav" data-id="${shop.id}">${isFav(shop.id) ? '❤️' : '🤍'}</button>
       </div>
       <div class="sheet-tags">${tags}</div>
       <p class="sheet-desc">${shop.desc}</p>
+      ${shop.descEn ? `<p class="sheet-desc sheet-desc--en">${shop.descEn}</p>` : ''}
       <div class="sheet-info">
         <div class="info-item">
-          <div class="info-item__label">招牌</div>
+          <div class="info-item__label">招牌必點</div>
           <div class="info-item__value">${shop.specialty}</div>
         </div>
         <div class="info-item">
           <div class="info-item__label">均消</div>
-          <div class="info-item__value">$${shop.price}</div>
+          <div class="info-item__value">NT$${shop.price}</div>
         </div>
         <div class="info-item">
-          <div class="info-item__label">營業</div>
+          <div class="info-item__label">營業時間</div>
           <div class="info-item__value">${shop.hours}</div>
         </div>
         <div class="info-item">
-          <div class="info-item__label">狀態</div>
-          <div class="info-item__value" style="color:${open ? '#2E7D32' : '#999'}">${open ? '● 現在開門' : '○ 目前休息'}</div>
+          <div class="info-item__label">目前狀態</div>
+          <div class="info-item__value" style="color:${open ? '#2E7D32' : '#999'}">${open ? '● 營業中' : '○ 休息中'}</div>
         </div>
         ${shop.closedDay ? `<div class="info-item"><div class="info-item__label">公休</div><div class="info-item__value">${shop.closedDay}</div></div>` : ''}
+        <div class="info-item">
+          <div class="info-item__label">冷氣</div>
+          <div class="info-item__value">${
+            shop.ac === true  ? '❄️ 有冷氣（已確認）' :
+            shop.ac === false ? '☀️ 無冷氣（已確認）' :
+                                '⬜ 未確認'
+          }</div>
+        </div>
         ${distLine}
       </div>
       <div class="sheet-actions">
         <a class="sheet-btn sheet-btn--primary"
            href="https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}"
-           target="_blank" rel="noopener">🗺️ Google Maps 導航</a>
+           target="_blank" rel="noopener">🗺️ 導航</a>
+        <a class="sheet-btn sheet-btn--ghost"
+           href="https://www.google.com/maps/search/${encodeURIComponent(shop.name + ' ' + shop.district + ' 台中')}"
+           target="_blank" rel="noopener">📋 菜單</a>
         <button class="sheet-btn sheet-btn--ghost" id="sheet-share">↗ 分享</button>
         <button class="sheet-btn sheet-btn--ghost" id="sheet-close">✕ 關閉</button>
       </div>
@@ -282,16 +327,16 @@ function openSheet(shop) {
       <!-- COMMENTS -->
       <div class="sheet-comments">
         <div class="comments-title">💬 留言板</div>
-        <div class="comments-list" id="comments-list"><p class="comments-loading">載入留言中…</p></div>
+        <div class="comments-list" id="comments-list"><p class="comments-loading">載入中…</p></div>
         <div class="comment-form">
           <div class="comment-form__row">
-            <input class="comment-input" id="c-nick" placeholder="你的暱稱" maxlength="20">
+            <input class="comment-input" id="c-nick" placeholder="暱稱" maxlength="20">
             <div class="star-rating" id="star-rating">
               ${[1,2,3,4,5].map(n => `<button class="star${n <= 5 ? ' star--on' : ''}" data-star="${n}">★</button>`).join('')}
             </div>
           </div>
-          <textarea class="comment-textarea" id="c-content" placeholder="分享你的早餐體驗…" maxlength="300" rows="3"></textarea>
-          <button class="comment-submit" id="c-submit">送出留言</button>
+          <textarea class="comment-textarea" id="c-content" placeholder="分享你的早餐心得…" maxlength="300" rows="3"></textarea>
+          <button class="comment-submit" id="c-submit">送出心得</button>
         </div>
       </div>
     </div>
@@ -324,7 +369,7 @@ function openSheet(shop) {
   document.getElementById('c-submit').addEventListener('click', async () => {
     const nick = document.getElementById('c-nick').value.trim();
     const content = document.getElementById('c-content').value.trim();
-    if (!nick || !content) { alert('請填寫暱稱和留言內容'); return; }
+    if (!nick || !content) { alert('請填寫暱稱和留言'); return; }
     const btn = document.getElementById('c-submit');
     btn.disabled = true; btn.textContent = '送出中…';
     try {
@@ -334,7 +379,7 @@ function openSheet(shop) {
     } catch(e) {
       alert('送出失敗，請稍後再試');
     }
-    btn.disabled = false; btn.textContent = '送出留言';
+    btn.disabled = false; btn.textContent = '送出心得';
   });
 
   loadComments(shop.id);
@@ -345,7 +390,7 @@ async function loadComments(shopId) {
   if (!el) return;
   const comments = await fetchComments(shopId);
   if (!comments.length) {
-    el.innerHTML = `<p class="comments-empty">還沒有留言，來分享你的早餐心得！</p>`;
+    el.innerHTML = `<p class="comments-empty">還沒有心得，來第一個分享你的早餐體驗！</p>`;
     return;
   }
   el.innerHTML = comments.map(c => `
@@ -370,7 +415,7 @@ function closeSheet() {
 // ── SHARE ──
 async function shareShop(shop) {
   const url = `${location.origin}${location.pathname}?shop=${shop.id}`;
-  const text = `${shop.name}｜台中${shop.district}早餐推薦 — MORNING TW`;
+  const text = `${shop.nameEn || shop.name} — Breakfast in Taichung ${shop.district} | MORNING TW`;
   if (navigator.share) {
     try { await navigator.share({ title: text, url }); return; } catch {}
   }
@@ -421,66 +466,77 @@ function setupEvents() {
     applyFilters();
   });
 
-  sortBar?.addEventListener('click', e => {
+  sortBar?.addEventListener('click', async e => {
     const tab = e.target.closest('.sort-tab');
     if (!tab) return;
     sortBar.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('sort-tab--active'));
     tab.classList.add('sort-tab--active');
     activeSort = tab.dataset.sort;
     if (activeSort === 'distance' && !userLat) {
-      if (!navigator.geolocation) { applyFilters(); return; }
-      tab.textContent = '⏳ 定位中...';
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          userLat = pos.coords.latitude; userLng = pos.coords.longitude;
-          updateLocateBtn(true); tab.textContent = '📍 距離最近'; applyFilters();
-        },
-        () => { tab.textContent = '📍 距離最近'; applyFilters(); },
-        { timeout: 8000 }
-      );
-      return;
+      tab.textContent = '⏳ 定位中…';
+      try { await requestLocation(); } catch {}
+      tab.textContent = '📍 距離';
     }
     applyFilters();
   });
 
-  btnLocate?.addEventListener('click', () => {
-    if (!navigator.geolocation) return;
-    btnLocate.textContent = '⏳ 定位中...';
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        userLat = pos.coords.latitude; userLng = pos.coords.longitude;
-        updateLocateBtn(true); applyFilters();
-        document.getElementById('list-section')?.scrollIntoView({ behavior: 'smooth' });
-      },
-      () => { btnLocate.textContent = '📍 找我附近的'; },
-      { timeout: 8000 }
-    );
+  btnLocate?.addEventListener('click', async () => {
+    if (userLat) {
+      // 已定位 → 直接捲到列表
+      document.getElementById('list-section')?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    try {
+      btnLocate.textContent = '⏳ 定位中...';
+      await requestLocation();
+      applyFilters();
+      document.getElementById('list-section')?.scrollIntoView({ behavior: 'smooth' });
+    } catch {
+      btnLocate.textContent = '📍 找我附近的';
+    }
   });
 
   // Open Now toggle
   btnOpenNow?.addEventListener('click', () => {
     showOpenOnly = !showOpenOnly;
     btnOpenNow.classList.toggle('sort-tab--active', showOpenOnly);
-    btnOpenNow.textContent = showOpenOnly ? '✅ 現在開門' : '🕐 現在開門';
+    btnOpenNow.textContent = showOpenOnly ? '✅ 現在營業' : '🕐 現在營業';
     applyFilters();
   });
 
-  // Dark mode toggle
-  btnDark?.addEventListener('click', () => {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('mw_dark', isDark ? '1' : '0');
-    btnDark.textContent = isDark ? '☀️' : '🌙';
+  // Saved filter (sort bar shortcut → syncs with chip)
+  document.getElementById('btn-favs-filter')?.addEventListener('click', () => {
+    const chip = document.querySelector('[data-type="favorites"]');
+    if (chip) chip.click();
   });
-  if (btnDark) btnDark.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
 
-  // 半徑快篩
-  document.getElementById('radius-bar')?.addEventListener('click', e => {
-    const btn = e.target.closest('.sort-tab[data-radius]');
+  // 半徑快篩 — 點選自動觸發定位
+  document.getElementById('radius-bar')?.addEventListener('click', async e => {
+    const btn = e.target.closest('.nearby-btn[data-radius]');
     if (!btn) return;
-    document.querySelectorAll('#radius-bar .sort-tab').forEach(b => b.classList.remove('sort-tab--active'));
-    btn.classList.add('sort-tab--active');
+
     const val = btn.dataset.radius;
-    activeRadius = val === 'all' ? null : parseFloat(val);
+    const newRadius = val === 'all' ? null : parseFloat(val);
+
+    // 切換 active 樣式
+    document.querySelectorAll('#radius-bar .nearby-btn').forEach(b => b.classList.remove('nearby-btn--active'));
+    btn.classList.add('nearby-btn--active');
+
+    // 如果選了具體距離且尚未定位 → 自動請求定位
+    if (newRadius !== null && !userLat) {
+      try {
+        await requestLocation();
+      } catch {
+        // 定位失敗 — 回到全部，提示使用者
+        document.querySelectorAll('#radius-bar .nearby-btn').forEach(b => b.classList.remove('nearby-btn--active'));
+        document.querySelector('#radius-bar .nearby-btn[data-radius="all"]')?.classList.add('nearby-btn--active');
+        const label = document.getElementById('nearby-loc-label');
+        if (label) { label.textContent = '定位失敗'; setTimeout(() => { label.textContent = '點選定位'; }, 3000); }
+        activeRadius = null; applyFilters(); return;
+      }
+    }
+
+    activeRadius = newRadius;
     applyFilters();
   });
 
