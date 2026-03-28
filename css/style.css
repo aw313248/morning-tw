@@ -1877,3 +1877,194 @@ mark {
 }
 .claim-submit:hover { opacity: 0.85; }
 .claim-submit:disabled { opacity: 0.5; }
+
+/* ═══════════════════════
+   Tinder 滑牌
+═══════════════════════ */
+.tinder-wrapper {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 14px;
+  padding: 4px 8px 0;
+  width: 100%;
+}
+.tinder-header {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; max-width: 300px;
+  font-size: 11px; color: #bbb;
+}
+.tinder-header__count { font-weight: 700; color: #F5A623; }
+
+.tinder-stack {
+  position: relative;
+  width: 100%; max-width: 300px;
+  height: 360px;
+}
+
+.tinder-card {
+  position: absolute; inset: 0;
+  border-radius: 20px;
+  background: #f5f5f5;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.14);
+  cursor: grab;
+  user-select: none;
+  will-change: transform;
+  touch-action: none;
+}
+.tinder-card:active { cursor: grabbing; }
+.tinder-card--gone { pointer-events: none; }
+
+.tinder-card__img {
+  position: absolute; inset: 0;
+}
+.tinder-card__img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  draggable: false;
+}
+.tinder-card__gradient {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 55%, transparent 100%);
+}
+
+/* LIKE / NOPE stamps */
+.tinder-card__like-stamp,
+.tinder-card__nope-stamp {
+  position: absolute; top: 22px;
+  font-size: 18px; font-weight: 900;
+  letter-spacing: 1px;
+  padding: 5px 14px;
+  border-radius: 8px; border: 3px solid;
+  opacity: 0;
+  transition: opacity 0.1s;
+  pointer-events: none;
+}
+.tinder-card__like-stamp {
+  right: 16px; color: #4CAF50; border-color: #4CAF50;
+  transform: rotate(15deg);
+}
+.tinder-card__nope-stamp {
+  left: 16px; color: #e05a52; border-color: #e05a52;
+  transform: rotate(-15deg);
+}
+
+/* Info at bottom */
+.tinder-card__info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 16px 18px 18px;
+  color: #fff;
+}
+.tinder-card__name { font-size: 19px; font-weight: 900; line-height: 1.2; }
+.tinder-card__en { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+.tinder-card__meta { font-size: 12px; opacity: 0.9; margin-top: 8px; }
+.tinder-card__price-row { display: flex; gap: 10px; margin-top: 5px; }
+.tinder-card__price { font-size: 11px; opacity: 0.8; }
+.tinder-card__hours { font-size: 11px; opacity: 0.7; }
+
+/* Action buttons */
+.tinder-btns {
+  display: flex; align-items: center; justify-content: center;
+  gap: 20px;
+}
+.tinder-btn {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  background: #fff;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.tinder-btn:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.16); }
+.tinder-btn:active { transform: scale(0.93); }
+.tinder-btn--nope { border: 2px solid #e05a52; color: #e05a52; }
+.tinder-btn--like { border: 2px solid #4CAF50; color: #4CAF50; }
+.tinder-btn--surprise {
+  width: 44px; height: 44px;
+  font-size: 18px;
+  border: 2px solid #F5A623; color: #F5A623;
+}
+
+/* ─── MEMBER PANEL — Favorites Section ─── */
+.member-section {
+  padding: 0 20px 16px;
+}
+.member-section__title {
+  font-size: 13px; font-weight: 700;
+  color: #888;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.member-favs {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.member-fav-item {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  text-align: left;
+  transition: background 0.15s;
+}
+.member-fav-item:hover, .member-fav-item:active {
+  background: #f5f5f5;
+}
+.member-fav-item__img {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f0f0f0;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.member-fav-item__img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.member-fav-item__info {
+  flex: 1; min-width: 0;
+}
+.member-fav-item__name {
+  font-size: 14px; font-weight: 700;
+  color: #111;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.member-fav-item__meta {
+  font-size: 11px; color: #999;
+  margin-top: 2px;
+}
+.member-fav-item__arrow {
+  font-size: 14px; color: #ccc;
+  flex-shrink: 0;
+}
+
+.member-favs-empty {
+  text-align: center;
+  padding: 24px 16px;
+  background: #fafafa;
+  border-radius: 16px;
+  border: 1.5px dashed #e8e8e8;
+}
+.member-favs-empty__icon {
+  font-size: 36px; margin-bottom: 8px;
+}
+.member-favs-empty__text {
+  font-size: 13px; color: #888; line-height: 1.6;
+}
+.member-favs-empty__cta {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 8px 20px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 13px; font-weight: 700;
+  transition: opacity 0.15s;
+}
+.member-favs-empty__cta:hover { opacity: 0.85; }

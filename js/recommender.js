@@ -1,24 +1,8 @@
-// ── MORNING TW — 夭獸 AI 早餐助手 ──
+// ── MORNING TW — 夭獸 AI 早餐助手 (Tinder Edition) ──
 
 const PREF_KEY = 'mw_ai_pref';
 function loadPref() { try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); } catch { return {}; } }
 function savePref(u) { localStorage.setItem(PREF_KEY, JSON.stringify({ ...loadPref(), ...u, updatedAt: Date.now() })); }
-
-// 每種類型的菜名池（隨機抽）
-const DISH_POOL = {
-  egg:      ['手工粉漿蛋餅', '酥脆古早味蛋餅', '厚切蔥蛋餅', '傳統炒蛋餅', '煎蛋餅'],
-  rice:     ['紫米肉鬆飯糰', '鹹蛋飯糰', '五穀飯糰', '傳統飯糰', '炸物飯糰'],
-  soup:     ['現熬廣東粥', '菜頭粿湯', '清燉米粉湯', '台式鹹粥', '滷味粥'],
-  local:    ['古早味肉圓', '炒麵肉燥飯', '嘉義米糕', '紅燒肉', '碗粿'],
-  drink:    ['現磨鹹豆漿', '甜豆漿油條', '杏仁豆漿'],
-  western:  ['碳烤土司', '越南法棍麵包', '帕里尼三明治', '蔥抓餅', '蜂蜜奶油土司'],
-};
-
-function randDishName(types) {
-  const t = (types || ['egg'])[0];
-  const pool = DISH_POOL[t] || DISH_POOL.egg;
-  return pool[Math.floor(Math.random() * pool.length)];
-}
 
 // ── 夭獸台詞庫 ──
 const YAO_LINES = {
@@ -29,18 +13,15 @@ const YAO_LINES = {
   greet_return: [
     ['你回來了！🦁 夭獸好高興！', '上次你選了不錯的早餐，這次要換個口味嗎？'],
   ],
-  hunger_light: ['輕食嘛～', '夭獸覺得也很好吃！'],
-  hunger_medium: ['普通份量正好！', '夭獸也這樣！'],
-  hunger_full: ['哦！要吃超飽！🦁', '夭獸最喜歡這種決心了！'],
-  dish_ask: [
-    ['好了！現在最重要的問題 👇', '哪一個看起來最想咬一口？'],
-    ['夭獸精選菜單出現！🦁', '哪個讓你流口水了？'],
-    ['看！這些都是今天的選擇！', '哪一個最打動你的胃？'],
+  tinder_intro: [
+    ['好！現在來玩滑牌！🦁', '右滑 ❤️ 想去，左滑 ✕ 跳過', '選完夭獸幫你決定！'],
+    ['精選店家出現了！', '看到喜歡的往右滑！', '一起找到今天的早餐 🦁'],
   ],
   result: [
     (name) => [`找到了！就是${name}！🦁`, '夭獸保證這間值得！'],
     (name) => [`${name}！絕對沒錯！`, '夭獸用肚子保證！🦁'],
   ],
+  no_like: ['一間都沒心動嗎？！', '夭獸親自幫你決定好了 🦁'],
 };
 
 function randLine(arr) {
@@ -56,7 +37,7 @@ function distKm(lat1, lng1, lat2, lng2) {
 }
 
 function recommend(targetType, hunger, shops, userLat, userLng) {
-  let pool = [...shops];
+  let pool = [...shops].filter(s => !s.chain);
   if (targetType) {
     const matched = pool.filter(s => s.types?.includes(targetType));
     if (matched.length >= 3) pool = matched;
@@ -74,27 +55,13 @@ function recommend(targetType, hunger, shops, userLat, userLng) {
   return pool.slice(0, 3);
 }
 
-// 從資料庫隨機選出 5 間有照片的店，生成「今日誘惑菜單」
-function generateDishOptions(shops) {
-  let pool = shops.filter(s => s.photo);
-  if (filterType) pool = pool.filter(s => s.types?.includes(filterType));
-  // 優先選沒顯示過的
-  const fresh = pool.filter(s => !shownShopIds.has(s.id));
-  const src = fresh.length >= 4 ? fresh : pool; // 不夠時放寬
-  const shuffled = [...src].sort(() => Math.random() - 0.5);
-  const picked = shuffled.slice(0, 4);
-  picked.forEach(s => shownShopIds.add(s.id));
-  return picked.map(shop => ({
-    shop,
-    dishName: randDishName(shop.types),
-    value: shop.types?.[0] || 'egg',
-  }));
-}
-
 // ── STATE ──
 let chatEl, optionsEl, progressBar;
 let hunger = null, allShops = [], userLat = null, userLng = null;
-let dishOptions = [], shownShopIds = new Set(), filterType = null;
+
+// Tinder state
+let tinderPool = [], tinderIdx = 0, tinderLiked = [];
+let dragState = null, dragStartX = 0, dragCurrentX = 0;
 
 async function ensureShops() {
   if (allShops.length) return;
@@ -183,110 +150,185 @@ async function pickHunger(opt) {
   userBubble(opt.label.replace(/^[^\s]+ /, ''));
   setMood(opt.value === 'full' ? 'excited' : 'happy');
 
-  const reaction = YAO_LINES['hunger_' + opt.value];
   await new Promise(r => setTimeout(r, 200));
   optionsEl.innerHTML = '';
-  await showDishStep();
+  await showTinderStep();
 }
 
-// ── Step 2: 餐點視覺誘惑 ──
-async function showDishStep() {
-  setProgress(50);
-  shownShopIds.clear();
-  filterType = null;
-  dishOptions = generateDishOptions(allShops);
-  const lines = randLine(YAO_LINES.dish_ask);
+// ── Step 2: Tinder 滑牌 ──
+async function showTinderStep() {
+  setProgress(45);
+  const lines = randLine(YAO_LINES.tinder_intro);
   for (let i = 0; i < lines.length; i++) await typingBubble(lines[i], i * 100);
-  renderDishGrid();
+
+  await ensureShops();
+
+  // Build pool: prefer matching hunger type, with photos, non-chain
+  let pool = allShops.filter(s => s.photo && !s.chain);
+  if (hunger === 'light') {
+    const f = pool.filter(s => s.category === 'western' || s.types?.includes('egg'));
+    if (f.length >= 5) pool = f;
+  }
+  // Shuffle
+  pool = pool.sort(() => Math.random() - 0.5).slice(0, 8);
+
+  tinderPool = pool;
+  tinderIdx = 0;
+  tinderLiked = [];
+
+  renderTinderStack();
 }
 
-function renderDishGrid(isRefresh = false) {
+// ── Tinder Stack ──
+function renderTinderStack() {
   optionsEl.innerHTML = '';
 
-  // 類型快速篩選列
-  const typeRow = document.createElement('div');
-  typeRow.className = 'ai-type-row';
-  const types = [
-    { label: '全部', value: null },
-    { label: '🥚 蛋餅', value: 'egg' },
-    { label: '🍙 飯糰', value: 'rice' },
-    { label: '🥙 燒餅', value: 'bread' },
-    { label: '🍲 湯品', value: 'soup' },
-    { label: '🥐 西式', value: 'western' },
-  ];
-  types.forEach(t => {
-    const chip = document.createElement('button');
-    chip.className = 'ai-type-chip' + (filterType === t.value ? ' ai-type-chip--active' : '');
-    chip.textContent = t.label;
-    chip.addEventListener('click', () => {
-      filterType = t.value;
-      dishOptions = generateDishOptions(allShops);
-      renderDishGrid(true);
-    });
-    typeRow.appendChild(chip);
-  });
-  optionsEl.appendChild(typeRow);
+  const wrapper = document.createElement('div');
+  wrapper.className = 'tinder-wrapper';
 
-  // 圖片 grid
-  const grid = document.createElement('div');
-  grid.className = 'ai-dish-grid';
+  // Progress bar + counter
+  const header = document.createElement('div');
+  header.className = 'tinder-header';
+  header.innerHTML = `
+    <span class="tinder-header__hint">右滑 ❤️ 想去 · 左滑 ✕ 跳過</span>
+    <span class="tinder-header__count"><span id="tinder-liked-count">0</span> 間想去</span>
+  `;
+  wrapper.appendChild(header);
 
-  dishOptions.forEach((item, i) => {
-    const el = document.createElement('button');
-    el.className = 'ai-dish-card' + (isRefresh ? ' ai-dish-card--refresh' : '');
-    el.style.animationDelay = `${i * 0.07}s`;
-    el.innerHTML = `
-      <div class="ai-dish-card__thumb">
-        <img src="${item.shop.photo}" alt="${item.dishName}" loading="lazy">
-        <div class="ai-dish-card__overlay"></div>
-      </div>
-      <div class="ai-dish-card__info">
-        <div class="ai-dish-card__dish">${item.dishName}</div>
-        <div class="ai-dish-card__shop">${item.shop.name}</div>
-      </div>
-    `;
-    el.addEventListener('click', () => pickDish(item));
-    grid.appendChild(el);
-    requestAnimationFrame(() => el.classList.add('ai-opt--in'));
+  // Stack
+  const stack = document.createElement('div');
+  stack.className = 'tinder-stack';
+  stack.id = 'tinder-stack';
+
+  // Render cards bottom→top so top card is last in DOM (highest z-index via CSS)
+  [...tinderPool].reverse().forEach((shop, revIdx) => {
+    const idx = tinderPool.length - 1 - revIdx;
+    const card = buildTinderCard(shop, idx);
+    stack.appendChild(card);
   });
 
-  optionsEl.appendChild(grid);
+  wrapper.appendChild(stack);
 
-  // 底部行動列
-  const actions = document.createElement('div');
-  actions.className = 'ai-dish-actions';
+  // Action buttons
+  const btns = document.createElement('div');
+  btns.className = 'tinder-btns';
+  btns.innerHTML = `
+    <button class="tinder-btn tinder-btn--nope" id="tinder-nope" title="跳過">✕</button>
+    <button class="tinder-btn tinder-btn--surprise" id="tinder-surprise" title="夭獸決定">🦁</button>
+    <button class="tinder-btn tinder-btn--like" id="tinder-like" title="想去">❤️</button>
+  `;
+  wrapper.appendChild(btns);
 
-  const next = document.createElement('button');
-  next.className = 'ai-next-batch';
-  next.innerHTML = '🔄 換一批';
-  next.addEventListener('click', () => {
-    dishOptions = generateDishOptions(allShops);
-    renderDishGrid(true);
-  });
+  optionsEl.appendChild(wrapper);
 
-  const surprise = document.createElement('button');
-  surprise.className = 'ai-surprise-btn';
-  surprise.innerHTML = '🦁 夭獸幫我決定';
-  surprise.addEventListener('click', () => pickDish(null));
+  document.getElementById('tinder-nope')?.addEventListener('click', () => swipeCard('left'));
+  document.getElementById('tinder-like')?.addEventListener('click', () => swipeCard('right'));
+  document.getElementById('tinder-surprise')?.addEventListener('click', () => finishTinder(true));
 
-  actions.appendChild(next);
-  actions.appendChild(surprise);
-  optionsEl.appendChild(actions);
+  updateStackVisual();
+  initCardDrag();
 }
 
-async function pickDish(item) {
-  disableOptions();
-  setMood('excited');
-  if (item) {
-    userBubble(`${item.dishName}！`);
-    savePref({ lastDishType: item.value, lastDishName: item.dishName });
-  } else {
-    userBubble('夭獸幫我決定！');
+function buildTinderCard(shop, idx) {
+  const card = document.createElement('div');
+  card.className = 'tinder-card';
+  card.dataset.idx = idx;
+  card.innerHTML = `
+    <div class="tinder-card__img">
+      <img src="${shop.photo}" alt="${shop.name}" loading="lazy" draggable="false">
+    </div>
+    <div class="tinder-card__gradient"></div>
+    <div class="tinder-card__like-stamp">LIKE ❤️</div>
+    <div class="tinder-card__nope-stamp">NOPE ✕</div>
+    <div class="tinder-card__info">
+      <div class="tinder-card__name">${shop.name}</div>
+      ${shop.nameEn ? `<div class="tinder-card__en">${shop.nameEn}</div>` : ''}
+      <div class="tinder-card__meta">📍 ${shop.district}　✨ ${shop.specialty || shop.types?.[0] || ''}</div>
+      <div class="tinder-card__price-row">
+        <span class="tinder-card__price">💰 均消 NT$${shop.price || '?'}</span>
+        <span class="tinder-card__hours">${shop.hours || ''}</span>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function updateStackVisual() {
+  const stack = document.getElementById('tinder-stack');
+  if (!stack) return;
+  const cards = Array.from(stack.querySelectorAll('.tinder-card:not(.tinder-card--gone)'));
+  // cards[0] is the bottom of visible stack, last is front
+  const front = cards.findLast(c => parseInt(c.dataset.idx) === tinderIdx);
+  if (!front) return;
+
+  cards.forEach(card => {
+    const cardIdx = parseInt(card.dataset.idx);
+    const depth = cardIdx - tinderIdx; // 0 = front, 1 = next, etc.
+    if (depth < 0) return;
+    const scale = 1 - depth * 0.04;
+    const translateY = depth * 8;
+    const rotate = depth === 0 ? 0 : (depth % 2 === 0 ? -1 : 1) * depth * 1.2;
+    card.style.transition = 'transform 0.3s ease';
+    card.style.transform = `translateY(${translateY}px) scale(${scale}) rotate(${rotate}deg)`;
+    card.style.zIndex = 20 - depth;
+    card.style.opacity = depth > 2 ? '0' : '1';
+  });
+}
+
+function swipeCard(direction) {
+  const stack = document.getElementById('tinder-stack');
+  if (!stack) return;
+  const card = stack.querySelector(`.tinder-card[data-idx="${tinderIdx}"]`);
+  if (!card) return;
+
+  const shop = tinderPool[tinderIdx];
+
+  // Show stamp
+  const like = card.querySelector('.tinder-card__like-stamp');
+  const nope = card.querySelector('.tinder-card__nope-stamp');
+  if (direction === 'right' && like) like.style.opacity = '1';
+  if (direction === 'left'  && nope) nope.style.opacity = '1';
+
+  // Fly animation
+  card.style.transition = 'transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.45s';
+  card.style.transform = direction === 'right'
+    ? 'translateX(140%) rotate(20deg)'
+    : 'translateX(-140%) rotate(-20deg)';
+  card.style.opacity = '0';
+  card.classList.add('tinder-card--gone');
+
+  if (direction === 'right') {
+    tinderLiked.push(shop);
+    const counter = document.getElementById('tinder-liked-count');
+    if (counter) counter.textContent = tinderLiked.length;
   }
 
-  await new Promise(r => setTimeout(r, 220));
-  optionsEl.innerHTML = '';
-  await showResults(item);
+  tinderIdx++;
+  setTimeout(() => updateStackVisual(), 50);
+
+  // End conditions
+  const remaining = tinderPool.length - tinderIdx;
+  if (remaining <= 0 || tinderLiked.length >= 5) {
+    setTimeout(() => finishTinder(false), 500);
+  }
+}
+
+async function finishTinder(isSurprise) {
+  disableOptions();
+  setMood('excited');
+  setProgress(80);
+
+  if (isSurprise || tinderLiked.length === 0) {
+    userBubble('夭獸幫我決定！🦁');
+    await typingBubble('交給夭獸了！馬上幫你選！', 0);
+    setTimeout(() => showResults(null), 500);
+    return;
+  }
+
+  userBubble(`選了 ${tinderLiked.length} 間 ❤️`);
+  const topType = tinderLiked[0].types?.[0] || null;
+  await typingBubble(`夭獸幫你從 ${tinderLiked.length} 間裡挑最適合的！🦁`, 0);
+  setTimeout(() => showResults({ value: topType, likedShops: tinderLiked }), 500);
 }
 
 // ── 結果 ──
@@ -296,15 +338,24 @@ function fmtDist(shop) {
   return km < 0.3 ? `步行 ${Math.round(km/5*60)} 分` : `騎車 ${Math.round(km/13*60)} 分`;
 }
 
-async function showResults(chosenDish) {
+async function showResults(choice) {
   setProgress(100);
-  const targetType = chosenDish?.value || null;
-  const results = recommend(targetType, hunger, allShops, userLat, userLng);
-  const topName = results[0]?.name || '這間';
 
+  let resultPool;
+  if (choice?.likedShops?.length) {
+    // Sort liked shops by distance if available, else popularity
+    resultPool = choice.likedShops.map(s =>
+      (userLat && s.lat) ? { ...s, _dist: distKm(userLat, userLng, s.lat, s.lng) } : s
+    ).sort((a, b) => a._dist != null && b._dist != null ? a._dist - b._dist : (b.popularity||5)-(a.popularity||5));
+  } else {
+    resultPool = recommend(choice?.value || null, hunger, allShops, userLat, userLng);
+  }
+
+  const results = resultPool.slice(0, 3);
+  const topName = results[0]?.name || '這間';
   const resultLine = YAO_LINES.result[Math.floor(Math.random() * YAO_LINES.result.length)](topName);
   await typingBubble(resultLine[0], 0);
-  await typingBubble(resultLine[1], 200);
+  await typingBubble(resultLine[1], 250);
   await new Promise(r => setTimeout(r, 150));
 
   const scroll = document.createElement('div');
@@ -353,7 +404,67 @@ async function showResults(chosenDish) {
   setMood('celebrate');
 }
 
-// ── utils ──
+// ── 拖曳 / Touch ──
+function initCardDrag() {
+  const stack = document.getElementById('tinder-stack');
+  if (!stack) return;
+
+  const getTopCard = () => stack.querySelector(`.tinder-card[data-idx="${tinderIdx}"]`);
+
+  const onStart = (x) => {
+    const card = getTopCard();
+    if (!card) return;
+    dragStartX = x;
+    dragCurrentX = 0;
+    dragState = 'dragging';
+    card.style.transition = 'none';
+  };
+
+  const onMove = (x) => {
+    if (dragState !== 'dragging') return;
+    const card = getTopCard();
+    if (!card) return;
+    dragCurrentX = x - dragStartX;
+    const rot = dragCurrentX * 0.07;
+    card.style.transform = `translateX(${dragCurrentX}px) rotate(${rot}deg)`;
+
+    const like = card.querySelector('.tinder-card__like-stamp');
+    const nope = card.querySelector('.tinder-card__nope-stamp');
+    if (like) like.style.opacity = Math.min(1, Math.max(0, dragCurrentX / 70)).toString();
+    if (nope) nope.style.opacity = Math.min(1, Math.max(0, -dragCurrentX / 70)).toString();
+  };
+
+  const onEnd = () => {
+    if (dragState !== 'dragging') return;
+    dragState = null;
+    const card = getTopCard();
+    if (!card) return;
+
+    if (dragCurrentX > 60) {
+      swipeCard('right');
+    } else if (dragCurrentX < -60) {
+      swipeCard('left');
+    } else {
+      // Snap back
+      card.style.transition = 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1)';
+      card.style.transform = 'none';
+      const like = card.querySelector('.tinder-card__like-stamp');
+      const nope = card.querySelector('.tinder-card__nope-stamp');
+      if (like) like.style.opacity = '0';
+      if (nope) nope.style.opacity = '0';
+    }
+  };
+
+  stack.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
+  stack.addEventListener('touchmove',  e => onMove(e.touches[0].clientX),  { passive: true });
+  stack.addEventListener('touchend',   () => onEnd());
+
+  stack.addEventListener('mousedown', e => { e.preventDefault(); onStart(e.clientX); });
+  document.addEventListener('mousemove', e => { if (dragState === 'dragging') onMove(e.clientX); });
+  document.addEventListener('mouseup',   () => { if (dragState === 'dragging') onEnd(); });
+}
+
+// ── Utils ──
 function disableOptions() {
   optionsEl.querySelectorAll('button').forEach(b => { b.disabled = true; b.style.opacity = '0.45'; });
 }
@@ -374,6 +485,7 @@ function spawnSparkles() {
 // ── FLOW ──
 async function startFlow() {
   hunger = null;
+  tinderLiked = []; tinderIdx = 0;
   chatEl.innerHTML = ''; optionsEl.innerHTML = '';
   setProgress(0); setMood('happy');
   await ensureShops();

@@ -880,6 +880,29 @@ function openMemberPanel(user) {
   const favCount = favorites.length;
   const isPremium = false; // TODO: 串接付費系統後改為真實狀態
 
+  // Build favorites list HTML
+  const favShops = favorites.map(id => allData.find(s => s.id === id)).filter(Boolean);
+  const favListHTML = favShops.length
+    ? `<div class="member-favs">
+        ${favShops.map(s => `
+          <button class="member-fav-item" data-id="${s.id}">
+            <div class="member-fav-item__img">
+              ${s.photo ? `<img src="${s.photo}" alt="${s.name}" loading="lazy">` : `<span>${s.icon}</span>`}
+            </div>
+            <div class="member-fav-item__info">
+              <div class="member-fav-item__name">${s.name}</div>
+              <div class="member-fav-item__meta">${s.district} · ${s.hours || ''}</div>
+            </div>
+            <div class="member-fav-item__arrow">→</div>
+          </button>
+        `).join('')}
+      </div>`
+    : `<div class="member-favs-empty">
+        <div class="member-favs-empty__icon">🍳</div>
+        <div class="member-favs-empty__text">還沒有收藏的店家<br><small>點店家卡片上的 ❤️ 即可收藏</small></div>
+        <button class="member-favs-empty__cta" id="btn-go-explore">去探索 →</button>
+      </div>`;
+
   panel.innerHTML = `
     <div class="member-panel__header">
       <button class="member-panel__close" id="btn-member-close">✕</button>
@@ -901,9 +924,17 @@ function openMemberPanel(user) {
         <div class="member-stat__label">已收藏</div>
       </div>
       <div class="member-stat">
-        <div class="member-stat__num">∞</div>
-        <div class="member-stat__label">可查看</div>
+        <div class="member-stat__num">${allData.length}</div>
+        <div class="member-stat__label">全台中店家</div>
       </div>
+      <div class="member-stat">
+        <div class="member-stat__num">${allData.filter(s => isOpenNow(s.hours)).length}</div>
+        <div class="member-stat__label">現在營業中</div>
+      </div>
+    </div>
+    <div class="member-section">
+      <div class="member-section__title">❤️ 我的收藏</div>
+      ${favListHTML}
     </div>
     ${!isPremium ? `
     <div class="member-panel__upgrade">
@@ -934,6 +965,16 @@ function openMemberPanel(user) {
   });
   document.getElementById('btn-upgrade')?.addEventListener('click', () => {
     showToast('升級功能即將推出，敬請期待！');
+  });
+  document.getElementById('btn-go-explore')?.addEventListener('click', () => {
+    closeMemberPanel();
+    document.getElementById('list-section')?.scrollIntoView({ behavior: 'smooth' });
+  });
+  panel.querySelectorAll('.member-fav-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const shop = allData.find(s => s.id === btn.dataset.id);
+      if (shop) { closeMemberPanel(); openSheet(shop); }
+    });
   });
 }
 
