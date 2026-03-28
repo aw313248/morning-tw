@@ -23,6 +23,10 @@ async function fetchComments(id) { return (await getSupabase()).fetchComments(id
 async function addComment(payload) { return (await getSupabase()).addComment(payload); }
 async function loadFavsCloud(uid) { return (await getSupabase()).loadFavsCloud(uid); }
 async function saveFavsCloud(uid, ids) { return (await getSupabase()).saveFavsCloud(uid, ids); }
+async function submitClaim(payload) { return (await getSupabase()).submitClaim(payload); }
+async function fetchAllRatings() {
+  try { return (await getSupabase()).fetchAllRatings(); } catch { return {}; }
+}
 
 const TYPE_LABELS = {
   egg:         { label: '蛋餅',   icon: '🍳', cls: 'tag--egg' },
@@ -71,6 +75,8 @@ let showOpenOnly = false;
 let activeRadius = null; // null = 全部, 數字 = km
 let userLat = null, userLng = null;
 let favorites = JSON.parse(localStorage.getItem('mw_favs') || '[]');
+let routeShops = []; // 路線規劃：選中的店家 IDs
+let ratingsCache = {}; // shop_id → { avg, count }
 
 // ── DOM ──
 const listEl        = document.getElementById('breakfast-list');
@@ -96,15 +102,26 @@ const bottomSheet   = document.getElementById('bottom-sheet');
   if (browseLink) browseLink.textContent = `瀏覽全部 ${allData.length} 間早餐店 ↓`;
 
   buildDistrictCounts(allData);
+  buildDailyPicks(allData);
   buildMarquee(allData);
   tryAutoLocate();
   setupEvents();
+  initRouteFab();
 
   // Auth 初始化（延後，不阻塞首次渲染）
   setTimeout(async () => {
     await initAuth();
     onAuthChange(handleAuthChange);
   }, 100);
+
+  // 評分懶加載（不阻塞首次渲染）
+  setTimeout(async () => {
+    ratingsCache = await fetchAllRatings();
+    if (Object.keys(ratingsCache).length) renderList(filtered.length ? filtered : allData);
+  }, 800);
+
+  // 推播通知：收藏店家有開門時提醒
+  setTimeout(() => initPushHint(), 3000);
 
   // AI recommender: 開啟店家 sheet
   window.addEventListener('ai:openShop', e => {
@@ -338,6 +355,10 @@ function renderList(data) {
             <span>${s.district}</span>
             ${distBadge ? `<span class="shop-card__dot">·</span>${distBadge}` : ''}
           </div>
+          <div class="shop-card__bottom-row">
+            ${ratingsCache[s.id] ? `<span class="shop-card__rating">⭐ ${ratingsCache[s.id].avg} <span class="shop-card__rating-count">(${ratingsCache[s.id].count}則)</span></span>` : ''}
+            <button class="shop-card__route-btn ${routeShops.includes(s.id) ? 'shop-card__route-btn--active' : ''}" data-route="${s.id}" title="加入路線">＋路線</button>
+          </div>
         </div>
       </div>
     `;
@@ -346,10 +367,18 @@ function renderList(data) {
   listEl.querySelectorAll('.shop-card').forEach(el => {
     el.addEventListener('click', e => {
       if (e.target.closest('.shop-card__fav')) return;
+      if (e.target.closest('.shop-card__route-btn')) return;
       const shop = filtered.find(s => s.id === el.dataset.id);
       if (shop) openSheet(shop);
     });
     el.addEventListener('keydown', e => { if (e.key === 'Enter') el.click(); });
+  });
+
+  listEl.querySelectorAll('.shop-card__route-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleRoute(btn.dataset.route, btn);
+    });
   });
 
   listEl.querySelectorAll('.shop-card__fav').forEach(btn => {
@@ -439,6 +468,12 @@ function openSheet(shop) {
         </div>
         ${distLine}
       </div>
+      ${ratingsCache[shop.id] ? `
+      <div class="sheet-rating-bar">
+        <span class="sheet-rating-stars">${'★'.repeat(Math.round(ratingsCache[shop.id].avg))}${'☆'.repeat(5 - Math.round(ratingsCache[shop.id].avg))}</span>
+        <span class="sheet-rating-avg">${ratingsCache[shop.id].avg}</span>
+        <span class="sheet-rating-count">${ratingsCache[shop.id].count} 則評分</span>
+      </div>` : ''}
       <div class="sheet-actions">
         <a class="sheet-btn sheet-btn--primary"
            href="https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}"
@@ -446,9 +481,11 @@ function openSheet(shop) {
         <a class="sheet-btn sheet-btn--ghost"
            href="https://www.google.com/maps/search/${encodeURIComponent(shop.name + ' ' + shop.district + ' 台中')}"
            target="_blank" rel="noopener">📋 菜單</a>
+        <button class="sheet-btn sheet-btn--ghost" id="sheet-route">${routeShops.includes(shop.id) ? '✓ 路線中' : '＋加入路線'}</button>
         <button class="sheet-btn sheet-btn--ghost" id="sheet-share">↗ 分享</button>
         <button class="sheet-btn sheet-btn--ghost" id="sheet-close">✕ 關閉</button>
       </div>
+      <button class="sheet-claim-btn" id="sheet-claim">🏪 我是這間店的老闆</button>
 
       <!-- COMMENTS -->
       <div class="sheet-comments">
@@ -480,6 +517,16 @@ function openSheet(shop) {
   });
 
   document.getElementById('sheet-share').addEventListener('click', () => shareShop(shop));
+
+  document.getElementById('sheet-route')?.addEventListener('click', (e) => {
+    toggleRoute(shop.id, e.currentTarget);
+    e.currentTarget.textContent = routeShops.includes(shop.id) ? '✓ 路線中' : '＋加入路線';
+  });
+
+  document.getElementById('sheet-claim')?.addEventListener('click', () => openClaimModal(shop.id, shop.name));
+
+  // Update page title for sharing
+  document.title = `${shop.name} — MORNING TW 台中早餐地圖`;
 
   // Star rating
   let selectedRating = 5;
@@ -548,6 +595,7 @@ function closeSheet() {
   bottomSheet.style.transform = '';
   currentShopId = null;
   resetView();
+  document.title = 'MORNING TW — 台中早餐地圖';
 }
 
 // ── SHARE ──
@@ -775,7 +823,11 @@ function setupEvents() {
   });
 
   sheetOverlay.addEventListener('click', closeSheet);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeSheet(); closeClaimModal(); }
+  });
+
+  setupClaimModal();
 
   // ── TRANSPORT MODE ──
   function syncTransportUI() {
@@ -888,6 +940,188 @@ function openMemberPanel(user) {
 function closeMemberPanel() {
   document.getElementById('member-overlay')?.classList.remove('member-overlay--open');
   document.getElementById('member-panel')?.classList.remove('member-panel--open');
+}
+
+// ── 今日推薦 ──
+function buildDailyPicks(data) {
+  const el = document.getElementById('daily-picks');
+  if (!el || !data.length) return;
+
+  // 以當天日期為種子，固定選 3 間（非連鎖、非贊助）
+  const daySeed = Math.floor(Date.now() / 86400000);
+  const pool = data.filter(s => !s.chain);
+  const picks = [];
+  for (let i = 0; picks.length < 3 && i < pool.length * 3; i++) {
+    const idx = (daySeed * 17 + i * 31 + i * i * 7) % pool.length;
+    const s = pool[idx];
+    if (!picks.find(p => p.id === s.id)) picks.push(s);
+  }
+
+  const dateStr = new Date().toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' });
+  el.innerHTML = `
+    <div class="daily-picks__header">
+      <span class="daily-picks__title">✨ 今日推薦</span>
+      <span class="daily-picks__date">${dateStr}</span>
+    </div>
+    <div class="daily-picks__row">
+      ${picks.map(s => `
+        <div class="daily-pick" data-id="${s.id}">
+          <div class="daily-pick__img">
+            ${s.photo
+              ? `<img src="${s.photo}" alt="${s.name}" loading="lazy" onerror="this.style.display='none'">`
+              : `<div class="daily-pick__emoji">${s.icon}</div>`}
+          </div>
+          <div class="daily-pick__name">${s.name}</div>
+          <div class="daily-pick__district">${s.district}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  el.querySelectorAll('.daily-pick').forEach(card => {
+    card.addEventListener('click', () => {
+      const shop = allData.find(s => s.id === card.dataset.id);
+      if (shop) openSheet(shop);
+    });
+  });
+}
+
+// ── 路線規劃 ──
+function toggleRoute(shopId, btn) {
+  const idx = routeShops.indexOf(shopId);
+  if (idx === -1) {
+    if (routeShops.length >= 8) { showToast('最多可選 8 間'); return; }
+    routeShops.push(shopId);
+    showToast('已加入路線 🗺️');
+  } else {
+    routeShops.splice(idx, 1);
+  }
+  // Update all route buttons for this shop
+  document.querySelectorAll(`[data-route="${shopId}"]`).forEach(b => {
+    b.classList.toggle('shop-card__route-btn--active', routeShops.includes(shopId));
+    b.textContent = routeShops.includes(shopId) ? '✓ 路線中' : '＋路線';
+  });
+  updateRouteFab();
+}
+
+function updateRouteFab() {
+  const fab = document.getElementById('route-fab');
+  const count = document.getElementById('route-count');
+  if (!fab) return;
+  if (routeShops.length > 0) {
+    fab.classList.add('route-fab--visible');
+    fab.removeAttribute('aria-hidden');
+  } else {
+    fab.classList.remove('route-fab--visible');
+    fab.setAttribute('aria-hidden', 'true');
+  }
+  if (count) count.textContent = routeShops.length;
+}
+
+function initRouteFab() {
+  document.getElementById('btn-route-go')?.addEventListener('click', () => {
+    const shops = routeShops.map(id => allData.find(s => s.id === id)).filter(Boolean);
+    if (!shops.length) return;
+    const [origin, ...waypoints] = shops;
+    const dest = shops[shops.length - 1];
+    const wp = waypoints.slice(0, -1).map(s => `${s.lat},${s.lng}`).join('|');
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${dest.lat},${dest.lng}${wp ? `&waypoints=${wp}` : ''}&travelmode=driving`;
+    window.open(url, '_blank', 'noopener');
+  });
+  document.getElementById('btn-route-clear')?.addEventListener('click', () => {
+    routeShops = [];
+    document.querySelectorAll('.shop-card__route-btn').forEach(b => {
+      b.classList.remove('shop-card__route-btn--active');
+      b.textContent = '＋路線';
+    });
+    updateRouteFab();
+    showToast('路線已清除');
+  });
+}
+
+// ── 店家認領 ──
+let claimShopId = '', claimShopName = '';
+
+function openClaimModal(shopId, shopName) {
+  claimShopId = shopId; claimShopName = shopName;
+  const overlay = document.getElementById('claim-overlay');
+  const modal   = document.getElementById('claim-modal');
+  if (!overlay || !modal) return;
+  overlay.classList.add('claim-overlay--open');
+  modal.classList.add('claim-modal--open');
+  modal.removeAttribute('aria-hidden');
+}
+
+function closeClaimModal() {
+  document.getElementById('claim-overlay')?.classList.remove('claim-overlay--open');
+  document.getElementById('claim-modal')?.classList.remove('claim-modal--open');
+  document.getElementById('claim-modal')?.setAttribute('aria-hidden', 'true');
+}
+
+function setupClaimModal() {
+  document.getElementById('btn-claim-close')?.addEventListener('click', closeClaimModal);
+  document.getElementById('claim-overlay')?.addEventListener('click', closeClaimModal);
+  document.getElementById('btn-claim-submit')?.addEventListener('click', async () => {
+    const name  = document.getElementById('claim-name')?.value.trim();
+    const phone = document.getElementById('claim-phone')?.value.trim();
+    const msg   = document.getElementById('claim-msg')?.value.trim();
+    if (!name || !phone) { showToast('請填寫姓名和聯絡電話'); return; }
+    const btn = document.getElementById('btn-claim-submit');
+    btn.disabled = true; btn.textContent = '送出中…';
+    try {
+      await submitClaim({ shopId: claimShopId, shopName: claimShopName, contactName: name, contactPhone: phone, message: msg });
+      showToast('申請已送出！我們將盡快聯絡你 ✓');
+      closeClaimModal();
+    } catch {
+      showToast('送出失敗，請稍後再試');
+    }
+    btn.disabled = false; btn.textContent = '送出認領申請';
+  });
+}
+
+// ── 推播通知 ──
+async function initPushHint() {
+  if (!('Notification' in window) || !favorites.length) return;
+  if (Notification.permission === 'denied') return;
+
+  // 找收藏中目前開門的店
+  const openFavs = favorites
+    .map(id => allData.find(s => s.id === id))
+    .filter(s => s && isOpenNow(s.hours));
+
+  if (!openFavs.length) return;
+
+  // 尚未問過通知權限 → 溫和提示
+  if (Notification.permission === 'default') {
+    const fab = document.getElementById('route-fab');
+    // 顯示 toast 提示
+    const t = document.createElement('div');
+    t.className = 'toast toast--notify';
+    t.innerHTML = `🔔 <strong>${openFavs[0].name}</strong> 現在營業中！<button id="btn-allow-notify" style="margin-left:8px;font-weight:700;color:#F5A623">開啟通知</button>`;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => t.classList.add('toast--in'));
+    document.getElementById('btn-allow-notify')?.addEventListener('click', async () => {
+      t.remove();
+      const perm = await Notification.requestPermission();
+      if (perm === 'granted') {
+        new Notification('MORNING TW 早安！', {
+          body: `${openFavs[0].name} 現在營業中 🍳`,
+          icon: '/icons/icon-192.png',
+          badge: '/icons/icon-192.png',
+        });
+      }
+    });
+    setTimeout(() => { t.classList.remove('toast--in'); setTimeout(() => t.remove(), 400); }, 8000);
+    return;
+  }
+
+  // 已有權限 → 直接通知
+  if (Notification.permission === 'granted') {
+    new Notification('MORNING TW — 早安！', {
+      body: `你收藏的 ${openFavs[0].name} 現在營業中 🍳`,
+      icon: '/icons/icon-192.png',
+    });
+  }
 }
 
 // ── OPEN STATUS ──

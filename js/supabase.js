@@ -51,3 +51,29 @@ export async function saveFavsCloud(userId, favIds) {
     .upsert({ user_id: userId, fav_ids: favIds, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
   if (error) console.warn('saveFavsCloud:', error);
 }
+
+// ── 店家認領申請 ──
+export async function submitClaim({ shopId, shopName, contactName, contactPhone, message }) {
+  const { error } = await supabase
+    .from('shop_claims')
+    .insert([{ shop_id: shopId, shop_name: shopName, contact_name: contactName, contact_phone: contactPhone, message }]);
+  if (error) throw error;
+}
+
+// ── 全站評分彙整 (shop_id → { avg, count }) ──
+export async function fetchAllRatings() {
+  const { data, error } = await supabase
+    .from('comments')
+    .select('shop_id, rating');
+  if (error) return {};
+  const stats = {};
+  (data || []).forEach(r => {
+    if (!stats[r.shop_id]) stats[r.shop_id] = { sum: 0, count: 0 };
+    stats[r.shop_id].sum += r.rating;
+    stats[r.shop_id].count++;
+  });
+  Object.keys(stats).forEach(id => {
+    stats[id].avg = Math.round(stats[id].sum / stats[id].count * 10) / 10;
+  });
+  return stats;
+}
