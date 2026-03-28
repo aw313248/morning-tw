@@ -61,7 +61,30 @@
         >
         <button id="search-btn" class="hero__search-btn">搜尋</button>
       </div>
-      <a href="#list-section" class="hero__browse">瀏覽所有早餐店 →</a>
+      <!-- FOOD PHOTO CIRCLES -->
+      <div class="hero__photos">
+        <a href="#list-section" class="hero__photo-item">
+          <img src="/photos/tc016.jpg" alt="蛋餅">
+          <span>蛋餅</span>
+        </a>
+        <a href="#list-section" class="hero__photo-item">
+          <img src="/photos/tc002.jpg" alt="燒餅">
+          <span>燒餅</span>
+        </a>
+        <a href="#list-section" class="hero__photo-item hero__photo-item--center">
+          <img src="/photos/tc031.jpg" alt="米糕">
+          <span>米糕</span>
+        </a>
+        <a href="#list-section" class="hero__photo-item">
+          <img src="/photos/tc024.jpg" alt="粉漿蛋餅">
+          <span>粉漿蛋餅</span>
+        </a>
+        <a href="#list-section" class="hero__photo-item">
+          <img src="/photos/tc036.jpg" alt="越南麵包">
+          <span>越南麵包</span>
+        </a>
+      </div>
+      <a href="#list-section" class="hero__browse">瀏覽全部 41 間早餐店 ↓</a>
     </div>
 
     <!-- MARQUEE -->
@@ -127,6 +150,8 @@
           <button class="chip chip--district" data-district="北區">北區</button>
           <button class="chip chip--district" data-district="西屯區">西屯</button>
           <button class="chip chip--district" data-district="北屯區">北屯</button>
+          <button class="chip chip--district" data-district="大里區">大里</button>
+          <button class="chip chip--district" data-district="霧峰區">霧峰</button>
         </div>
         <div class="filter-bar__stats" id="stats-bar">
           找到 <strong id="stats-count">0</strong><span id="stats-label"> 間</span>
@@ -181,7 +206,60 @@
   <div class="sheet-overlay" id="sheet-overlay"></div>
   <div class="bottom-sheet" id="bottom-sheet" role="dialog" aria-modal="true"></div>
 
+  <!-- AI RECOMMENDER -->
+  <button id="btn-ai-pick" class="ai-pick-fab" aria-label="AI 為你推薦早餐">
+    <span class="ai-pick-fab__sparkle">✨</span>
+    <span class="ai-pick-fab__label">不知道吃什麼？</span>
+  </button>
+
+  <div id="ai-pick-overlay" class="ai-pick-overlay" aria-hidden="true">
+    <div class="ai-pick-panel" role="dialog" aria-modal="true">
+      <div class="ai-pick-progress"><div id="ai-progress-bar"></div></div>
+      <div class="ai-pick-header">
+        <div class="ai-pick-header__left">
+          <!-- 夭獸 SVG 小角色 -->
+          <div class="yaoshou-avatar" id="yaoshou-avatar">
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" class="yaoshou-svg">
+              <!-- 耳朵 -->
+              <ellipse cx="12" cy="15" rx="7" ry="9" fill="#F5A623"/>
+              <ellipse cx="44" cy="15" rx="7" ry="9" fill="#F5A623"/>
+              <ellipse cx="12" cy="16" rx="4" ry="6" fill="#FFD9A8"/>
+              <ellipse cx="44" cy="16" rx="4" ry="6" fill="#FFD9A8"/>
+              <!-- 身體 -->
+              <circle cx="28" cy="33" r="21" fill="#F5A623"/>
+              <!-- 眼白 -->
+              <circle cx="21" cy="30" r="6" fill="white"/>
+              <circle cx="35" cy="30" r="6" fill="white"/>
+              <!-- 眼珠 -->
+              <circle class="yaoshou-pupil-l" cx="22" cy="31" r="3.8" fill="#1A1A1A"/>
+              <circle class="yaoshou-pupil-r" cx="36" cy="31" r="3.8" fill="#1A1A1A"/>
+              <!-- 亮光 -->
+              <circle cx="23.5" cy="29.5" r="1.3" fill="white"/>
+              <circle cx="37.5" cy="29.5" r="1.3" fill="white"/>
+              <!-- 腮紅 -->
+              <ellipse cx="14" cy="37" rx="5" ry="3" fill="#FF8C8C" opacity="0.4"/>
+              <ellipse cx="42" cy="37" rx="5" ry="3" fill="#FF8C8C" opacity="0.4"/>
+              <!-- 嘴巴（飢餓） -->
+              <path class="yaoshou-mouth" d="M 20 40 Q 28 48 36 40" stroke="#333" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M 20 40 Q 28 46 36 40" fill="#E05A52" opacity="0.9"/>
+              <!-- 舌頭 -->
+              <ellipse cx="28" cy="44" rx="4" ry="2.5" fill="#FF6B6B"/>
+            </svg>
+          </div>
+          <div>
+            <div class="ai-pick-header__name">夭獸 <span class="yaoshou-tag">超餓</span></div>
+            <div class="ai-pick-header__sub">幫你找到台中最棒的早餐！</div>
+          </div>
+        </div>
+        <button class="ai-pick-close" id="btn-ai-close">✕</button>
+      </div>
+      <div class="ai-pick-chat" id="ai-pick-chat"></div>
+      <div class="ai-pick-options" id="ai-pick-options"></div>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/recommender.js"></script>
 </body>
 </html>
