@@ -761,19 +761,61 @@ body[data-view="map"] #map-container { height: 100% !important; }
 
 /* ─── FOOTER ─── */
 .footer {
-  background: #f5f5f5;
-  border-top: 1px solid rgba(0,0,0,0.06);
-  padding: 40px 24px 60px;
-  text-align: center;
+  background: #111;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 48px 24px 80px;
+  color: #fff;
 }
 
+.footer__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
 .footer__logo {
-  font-size: 20px; font-weight: 900;
-  letter-spacing: -0.5px; margin-bottom: 8px;
+  font-size: 22px; font-weight: 900;
+  letter-spacing: -0.5px; margin-bottom: 6px;
+  color: #fff;
 }
 .footer__logo em { font-style: normal; color: var(--accent); }
-.footer p { font-size: 12px; color: #aaa; margin-bottom: 4px; }
-.footer__copy { margin-top: 16px; font-size: 11px; color: #ccc; }
+.footer__tagline { font-size: 12px; color: #666; }
+.footer__stats {
+  display: flex; gap: 24px;
+}
+.footer__stat {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.footer__stat-num {
+  font-size: 22px; font-weight: 900; color: var(--accent);
+}
+.footer__stat-label { font-size: 11px; color: #555; }
+
+.footer__actions {
+  display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;
+}
+.footer__cta {
+  display: inline-flex; align-items: center;
+  padding: 10px 20px;
+  background: var(--accent); color: #fff;
+  border-radius: 20px; font-size: 13px; font-weight: 700;
+  transition: opacity 0.15s;
+}
+.footer__cta:hover { opacity: 0.85; }
+.footer__back-top {
+  display: inline-flex; align-items: center;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.08); color: #fff;
+  border-radius: 20px; font-size: 13px; font-weight: 700;
+  transition: background 0.15s;
+}
+.footer__back-top:hover { background: rgba(255,255,255,0.14); }
+
+.footer__bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; }
+.footer__copy { font-size: 11px; color: #444; margin-bottom: 4px; }
+.footer__disclaimer { font-size: 10px; color: #333; line-height: 1.6; }
 
 /* ─── BOTTOM NAV (mobile) ─── */
 .bottom-nav {
@@ -1108,14 +1150,58 @@ body[data-view="map"] #map-container { height: 100% !important; }
 }
 
 @media (min-width: 1024px) {
-  .shop-grid { grid-template-columns: repeat(3, 1fr); }
-  .list-section__inner { padding: 40px 40px 80px; }
-  .map-section__inner { padding: 32px 40px 48px; }
+  /* Nav wider */
+  .nav { padding: 0 48px; height: 58px; }
+  .nav__logo { font-size: 18px; }
+
+  /* Grid 3 col */
+  .shop-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .list-section__inner { padding: 40px 48px 80px; max-width: 1400px; margin: 0 auto; }
+  .map-section__inner { padding: 32px 48px 48px; }
+
+  /* Filters row wider */
+  .sticky-filters { padding-left: 48px; padding-right: 48px; }
+  .district-strip { gap: 8px; }
+
+  /* Daily picks horizontal */
+  .daily-picks { grid-template-columns: repeat(3, 1fr); }
+
+  /* Bottom sheet → right side panel on desktop */
+  .bottom-sheet {
+    width: 420px; height: 100vh; max-height: 100vh;
+    top: 0; right: 0; left: auto; bottom: auto;
+    border-radius: 0;
+    border-left: 1px solid rgba(0,0,0,0.08);
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+  }
+  .bottom-sheet--open {
+    transform: translateX(0);
+    border-radius: 0;
+  }
+  .sheet-handle { display: none; }
+
+  /* Footer wider */
+  .footer { padding: 56px 80px 80px; }
+  .footer__top { flex-wrap: nowrap; align-items: center; }
+  .footer__stats { gap: 40px; }
+  .footer__stat-num { font-size: 28px; }
+
+  /* Hide mobile bottom nav */
+  .bottom-nav { display: none; }
+
+  /* Hero wider */
+  .hero { padding: 80px 48px 60px; }
+  .hero__title { font-size: clamp(2.4rem, 4vw, 3.6rem); }
 }
 
 @media (min-width: 1280px) {
-  .shop-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .list-section__inner { padding: 40px 48px 80px; }
+  .shop-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .list-section__inner { padding: 40px 64px 80px; }
+}
+
+@media (min-width: 1600px) {
+  .shop-grid { grid-template-columns: repeat(5, 1fr); }
 }
 
 

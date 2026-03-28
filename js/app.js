@@ -104,6 +104,7 @@ const bottomSheet   = document.getElementById('bottom-sheet');
   buildDistrictCounts(allData);
   buildDailyPicks(allData);
   buildMarquee(allData);
+  buildFooterStats(allData);
   tryAutoLocate();
   setupEvents();
   initRouteFab();
@@ -634,6 +635,16 @@ function highlightText(text, query) {
   if (!query || !text) return text;
   const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
+// ── FOOTER STATS ──
+function buildFooterStats(data) {
+  const total = document.getElementById('footer-total');
+  const districts = document.getElementById('footer-districts');
+  const featured = document.getElementById('footer-featured');
+  if (total) total.textContent = data.length;
+  if (districts) districts.textContent = new Set(data.map(s => s.district)).size;
+  if (featured) featured.textContent = data.filter(s => s.featured || s.userFavorite).length;
 }
 
 // ── MARQUEE ──
