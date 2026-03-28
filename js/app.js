@@ -238,7 +238,7 @@ function openSheet(shop) {
       </div>
       <div class="sheet-actions">
         <a class="sheet-btn sheet-btn--primary"
-           href="https://www.google.com/maps/search/${encodeURIComponent(shop.name + ' ' + shop.address || shop.district + ' 台中市')}"
+           href="https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}"
            target="_blank" rel="noopener">
           🗺️ Google Maps 導航
         </a>
