@@ -235,7 +235,10 @@ function buildTinderCard(shop, idx) {
   card.dataset.idx = idx;
   card.innerHTML = `
     <div class="tinder-card__img">
-      <img src="${shop.photo}" alt="${shop.name}" loading="lazy" draggable="false">
+      ${shop.photo
+        ? `<img src="${shop.photo}" alt="${shop.name}" loading="lazy" draggable="false">`
+        : `<div class="tinder-card__img-placeholder">${shop.icon || '🍳'}</div>`
+      }
     </div>
     <div class="tinder-card__gradient"></div>
     <div class="tinder-card__like-stamp">LIKE ❤️</div>
