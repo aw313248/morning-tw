@@ -832,32 +832,40 @@ img { display: block; max-width: 100%; }
   .nav__links { display: none; }
   .nav__cta { display: none; }
 
-  .hero { min-height: auto; padding: 32px 20px 0; }
-  .hero__title { font-size: 38px; letter-spacing: -1.5px; }
-  .hero__desc { font-size: 14px; margin-bottom: 20px; }
-  .hero__search { padding: 6px 6px 6px 16px; }
-  .hero__browse { margin-bottom: 28px; }
+  .hero { min-height: auto; padding: 28px 16px 0; }
+  .hero__title { font-size: 36px; letter-spacing: -1.5px; }
+  .hero__desc { font-size: 13px; margin-bottom: 18px; }
+  .hero__search { padding: 6px 6px 6px 14px; margin-bottom: 12px; }
+  .hero__search input { font-size: 14px; }
+  .hero__browse { margin-bottom: 24px; font-size: 12px; }
 
-  .shop-grid { grid-template-columns: 1fr; }
+  .shop-grid { grid-template-columns: 1fr; gap: 10px; }
 
-  .list-section__inner { padding: 24px 16px 80px; }
+  /* 手機卡片更緊湊 */
+  .shop-card { padding: 12px 14px; gap: 12px; }
+  .shop-card__icon { width: 52px; height: 52px; font-size: 22px; }
+  .shop-card__name { font-size: 14px; }
 
-  .map-section__inner { padding: 24px 16px 40px; }
-  #map-container { height: 300px; }
+  .list-section__inner { padding: 20px 16px 80px; }
+
+  .map-section__inner { padding: 20px 16px 36px; }
+  #map-container { height: 280px; }
 
   .bottom-nav { display: flex; }
 
-  /* filter-bar 改直排 — 子項目要明確設 100% 才不會撐寬頁面 */
+  /* filter-bar 改直排 */
   .filter-bar {
     flex-direction: column; align-items: stretch;
     width: 100%;
   }
   .filter-bar__chips {
     width: 100%; max-width: 100%;
+    padding-bottom: 4px;
   }
-  .filter-bar__stats {
-    text-align: left;
-  }
+  /* chip 觸控區放大 */
+  .chip { padding: 7px 14px; font-size: 12px; }
+  .sort-tab { padding: 7px 12px; font-size: 12px; }
+  .filter-bar__stats { text-align: left; }
 
   /* nearby-strip 文字在小螢幕縮短 */
   .nearby-strip__loc-label {
@@ -868,18 +876,33 @@ img { display: block; max-width: 100%; }
     white-space: nowrap;
   }
 
-  /* nearby strip sticky — 捲動時始終在 nav 正下方，隨時可切換距離 */
+  /* nearby strip sticky */
   .nearby-strip {
     position: sticky;
-    top: 52px;       /* nav 高度 */
+    top: 52px;
     z-index: 150;
     border-radius: 0;
     border-left: none; border-right: none; border-top: none;
-    margin: -24px -16px 12px;   /* 貼齊兩側，與 inner padding 抵消 */
+    margin: -20px -16px 12px;
     padding: 10px 16px;
     background: rgba(255,251,242,0.97);
     backdrop-filter: blur(8px);
   }
+
+  /* sheet actions 改 2x2 格局，4 個按鈕剛好 */
+  .sheet-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  /* sheet photo hero 高度縮小一點 */
+  .sheet-photo-hero { height: 160px; }
+
+  /* sheet info 在手機改單欄 */
+  .sheet-info { grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* 底部 sheet 最大高度調高，讓內容更好捲 */
+  .bottom-sheet { max-height: 92vh; }
 }
 
 @media (min-width: 1024px) {

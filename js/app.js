@@ -540,6 +540,23 @@ function setupEvents() {
     applyFilters();
   });
 
+  // 「點選定位」dot/label 點擊
+  document.getElementById('nearby-loc-btn')?.addEventListener('click', async () => {
+    if (userLat) {
+      // 已定位 → 閃一下確認
+      const label = document.getElementById('nearby-loc-label');
+      if (label) { const orig = label.textContent; label.textContent = '✓ 已定位'; setTimeout(() => { label.textContent = orig; }, 1500); }
+      return;
+    }
+    try {
+      await requestLocation();
+      applyFilters();
+    } catch {
+      const label = document.getElementById('nearby-loc-label');
+      if (label) { label.textContent = '定位失敗'; setTimeout(() => { label.textContent = '點選定位'; }, 3000); }
+    }
+  });
+
   sheetOverlay.addEventListener('click', closeSheet);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 
