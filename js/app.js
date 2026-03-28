@@ -25,19 +25,20 @@ function fmtDist(km) {
 }
 
 let allData = [], filtered = [];
-let activeType = 'all', searchQuery = '';
+let activeType = 'all', activeDistrict = 'all', searchQuery = '';
 let userLat = null, userLng = null;
 let locating = false;
 
-const listEl       = document.getElementById('breakfast-list');
-const statsCount   = document.getElementById('stats-count');
-const statsLabel   = document.getElementById('stats-label');
-const searchInput  = document.getElementById('search-input');
-const searchBtn    = document.getElementById('search-btn');
-const typeChips    = document.getElementById('type-chips');
-const btnLocate    = document.getElementById('btn-locate');
-const sheetOverlay = document.getElementById('sheet-overlay');
-const bottomSheet  = document.getElementById('bottom-sheet');
+const listEl         = document.getElementById('breakfast-list');
+const statsCount     = document.getElementById('stats-count');
+const statsLabel     = document.getElementById('stats-label');
+const searchInput    = document.getElementById('search-input');
+const searchBtn      = document.getElementById('search-btn');
+const typeChips      = document.getElementById('type-chips');
+const districtChips  = document.getElementById('district-chips');
+const btnLocate      = document.getElementById('btn-locate');
+const sheetOverlay   = document.getElementById('sheet-overlay');
+const bottomSheet    = document.getElementById('bottom-sheet');
 
 (async () => {
   const res = await fetch('data/breakfasts.json');
@@ -94,14 +95,15 @@ function applyFilters() {
 
   filtered = allData
     .filter(s => {
-      const matchType   = activeType === 'all' || s.types.includes(activeType);
+      const matchType     = activeType === 'all' || s.types.includes(activeType);
+      const matchDistrict = activeDistrict === 'all' || s.district === activeDistrict;
       const matchSearch = !q ||
         s.name.toLowerCase().includes(q) ||
         s.district.toLowerCase().includes(q) ||
         (s.address || '').toLowerCase().includes(q) ||
         s.tags.some(t => t.toLowerCase().includes(q)) ||
         (s.specialty || '').toLowerCase().includes(q);
-      return matchType && matchSearch;
+      return matchType && matchDistrict && matchSearch;
     })
     .map(s => ({
       ...s,
@@ -273,6 +275,15 @@ function setupEvents() {
     typeChips.querySelectorAll('.chip').forEach(c => c.classList.remove('chip--active'));
     chip.classList.add('chip--active');
     activeType = chip.dataset.type;
+    applyFilters();
+  });
+
+  districtChips?.addEventListener('click', e => {
+    const chip = e.target.closest('.chip--district');
+    if (!chip) return;
+    districtChips.querySelectorAll('.chip--district').forEach(c => c.classList.remove('chip--active'));
+    chip.classList.add('chip--active');
+    activeDistrict = chip.dataset.district;
     applyFilters();
   });
 
