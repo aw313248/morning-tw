@@ -53,6 +53,7 @@ let allData = [], filtered = [];
 let activeType = 'all', activeDistrict = 'all', searchQuery = '';
 let activeSort = 'popular';
 let showOpenOnly = false;
+let activeRadius = null; // null = 全部, 數字 = km
 let userLat = null, userLng = null;
 let favorites = JSON.parse(localStorage.getItem('mw_favs') || '[]');
 
@@ -110,6 +111,9 @@ function updateLocateBtn(located) {
   if (!btnLocate) return;
   btnLocate.textContent = located ? '📍 已定位' : '📍 找我附近的';
   btnLocate.classList.toggle('btn-locate--active', located);
+  // 顯示半徑選擇器
+  const radiusBar = document.getElementById('radius-bar');
+  if (radiusBar) radiusBar.style.display = located ? 'flex' : 'none';
 }
 
 // ── FILTERS ──
@@ -130,7 +134,9 @@ function applyFilters() {
         s.tags.some(t => t.toLowerCase().includes(q)) ||
         (s.specialty || '').toLowerCase().includes(q);
       const matchOpen = !showOpenOnly || isOpenNow(s.hours);
-      return matchType && matchDistrict && matchSearch && matchOpen;
+      const dist = (userLat && s.lat) ? distKm(userLat, userLng, s.lat, s.lng) : null;
+      const matchRadius = !activeRadius || !userLat || (dist !== null && dist <= activeRadius);
+      return matchType && matchDistrict && matchSearch && matchOpen && matchRadius;
     })
     .map(s => ({ ...s, dist: (userLat && s.lat) ? distKm(userLat, userLng, s.lat, s.lng) : null }));
 
@@ -460,6 +466,17 @@ function setupEvents() {
     btnDark.textContent = isDark ? '☀️' : '🌙';
   });
   if (btnDark) btnDark.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+
+  // 半徑快篩
+  document.getElementById('radius-bar')?.addEventListener('click', e => {
+    const btn = e.target.closest('.sort-tab[data-radius]');
+    if (!btn) return;
+    document.querySelectorAll('#radius-bar .sort-tab').forEach(b => b.classList.remove('sort-tab--active'));
+    btn.classList.add('sort-tab--active');
+    const val = btn.dataset.radius;
+    activeRadius = val === 'all' ? null : parseFloat(val);
+    applyFilters();
+  });
 
   sheetOverlay.addEventListener('click', closeSheet);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
