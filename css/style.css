@@ -205,6 +205,38 @@ img { display: block; max-width: 100%; }
 
 .list-section__inner { padding: 32px 24px 60px; }
 
+/* SORT BAR */
+.sort-bar {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.sort-bar__label {
+  font-size: 11px; font-weight: 700; color: #aaa;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+
+.sort-tab {
+  height: 36px; padding: 0 16px;
+  border-radius: 100px;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  background: #fff;
+  font-size: 13px; font-weight: 600; color: #666;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.sort-tab:hover { border-color: #111; color: #111; }
+
+.sort-tab--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(245,166,35,0.3);
+}
+
 /* FILTER BAR */
 .filter-bar {
   display: flex; align-items: center; justify-content: space-between;
@@ -328,6 +360,10 @@ img { display: block; max-width: 100%; }
   background: var(--accent); color: #fff;
   border-radius: 100px; padding: 2px 7px;
   letter-spacing: 0.3px;
+}
+
+.shop-card__featured--fav {
+  background: #e91e63;
 }
 
 /* ─── MAP SECTION ─── */

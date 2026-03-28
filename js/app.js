@@ -26,6 +26,7 @@ function fmtDist(km) {
 
 let allData = [], filtered = [];
 let activeType = 'all', activeDistrict = 'all', searchQuery = '';
+let activeSort = 'popular'; // 'popular' | 'featured' | 'distance'
 let userLat = null, userLng = null;
 let locating = false;
 
@@ -36,6 +37,7 @@ const searchInput    = document.getElementById('search-input');
 const searchBtn      = document.getElementById('search-btn');
 const typeChips      = document.getElementById('type-chips');
 const districtChips  = document.getElementById('district-chips');
+const sortBar        = document.getElementById('sort-bar');
 const btnLocate      = document.getElementById('btn-locate');
 const sheetOverlay   = document.getElementById('sheet-overlay');
 const bottomSheet    = document.getElementById('bottom-sheet');
@@ -110,16 +112,28 @@ function applyFilters() {
       dist: (userLat && s.lat) ? distKm(userLat, userLng, s.lat, s.lng) : null,
     }));
 
-  // Sort: if we have location → by distance; otherwise featured first
-  if (userLat) {
-    filtered.sort((a, b) => (a.dist ?? 999) - (b.dist ?? 999));
+  // Sort by selected mode
+  if (activeSort === 'distance') {
+    if (userLat) {
+      filtered.sort((a, b) => (a.dist ?? 999) - (b.dist ?? 999));
+    } else {
+      // No location yet — trigger geolocation, sort by popularity meanwhile
+      filtered.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+    }
+  } else if (activeSort === 'featured') {
+    filtered.sort((a, b) => {
+      const fa = b.featured ? 1 : 0, fb = a.featured ? 1 : 0;
+      return fa - fb || (b.popularity || 0) - (a.popularity || 0);
+    });
   } else {
-    filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    // popular (default)
+    filtered.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
   }
 
   statsCount.textContent = filtered.length;
   if (statsLabel) {
-    statsLabel.textContent = userLat ? '間（依距離排序）' : '間';
+    const labels = { distance: '間（依距離排序）', featured: '間（官方精選優先）', popular: '間（人氣排行）' };
+    statsLabel.textContent = labels[activeSort] || '間';
   }
 
   renderList(filtered);
@@ -159,7 +173,7 @@ function renderList(data) {
           </div>
           <div class="shop-card__tags">${tags}</div>
         </div>
-        ${s.featured ? '<span class="shop-card__featured">精選</span>' : ''}
+        ${s.userFavorite ? '<span class="shop-card__featured shop-card__featured--fav">♥ 主編最愛</span>' : s.featured ? '<span class="shop-card__featured">精選</span>' : ''}
         <span class="shop-card__arrow">›</span>
       </div>
     `;
@@ -308,6 +322,37 @@ function setupEvents() {
 
   sheetOverlay.addEventListener('click', closeSheet);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+  // Sort tabs
+  sortBar?.addEventListener('click', e => {
+    const tab = e.target.closest('.sort-tab');
+    if (!tab) return;
+    sortBar.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('sort-tab--active'));
+    tab.classList.add('sort-tab--active');
+    activeSort = tab.dataset.sort;
+
+    if (activeSort === 'distance' && !userLat) {
+      // Prompt for location
+      if (!navigator.geolocation) { applyFilters(); return; }
+      tab.textContent = '⏳ 定位中...';
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          userLat = pos.coords.latitude;
+          userLng = pos.coords.longitude;
+          updateLocateBtn(true);
+          tab.textContent = '📍 距離最近';
+          applyFilters();
+        },
+        () => {
+          tab.textContent = '📍 距離最近';
+          applyFilters();
+        },
+        { timeout: 8000 }
+      );
+      return;
+    }
+    applyFilters();
+  });
 }
 
 // ── OPEN STATUS ──
