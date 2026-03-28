@@ -311,7 +311,7 @@
     "category": "traditional",
     "chain": false,
     "photo": "/photos/tc008.jpg",
-    "hook": "北屯社區的定海神針，豆漿現磨現煮，喝一口就知道差別"
+    "hook": "南屯黎明路的豆漿老店，現磨現煮，喝一口就知道差別"
   },
   {
     "id": "tc009",
@@ -521,11 +521,11 @@
     "name": "水湳市場米粉湯",
     "nameEn": "Shui Nan Market Rice Noodle Soup",
     "city": "台中市",
-    "district": "中區",
+    "district": "北屯區",
     "region": "台中",
-    "address": "台中市中區水湳市場附近",
-    "lat": 24.1447,
-    "lng": 120.6726,
+    "address": "台中市北屯區水湳市場附近",
+    "lat": 24.1523,
+    "lng": 120.6964,
     "hours": "06:00–11:00",
     "closedDay": "週一",
     "types": [
@@ -1988,8 +1988,8 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區成功路190號",
-    "lat": 24.3623,
-    "lng": 120.6825,
+    "lat": 24.0884,
+    "lng": 120.6841,
     "hours": "06:00–售完",
     "closedDay": "週一",
     "types": [
@@ -2023,8 +2023,8 @@
     "district": "大里區",
     "region": "台中",
     "address": "台中市大里區仁化路476號",
-    "lat": 24.3612,
-    "lng": 120.6908,
+    "lat": 24.0840,
+    "lng": 120.6926,
     "hours": "05:30–14:30",
     "closedDay": "無",
     "types": [
