@@ -21,9 +21,17 @@ function distKm(lat1, lng1, lat2, lng2) {
             Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
-function fmtDist(km) {
-  if (km < 1) return `${Math.round(km * 1000)} 公尺`;
-  return `${km.toFixed(1)} 公里`;
+// 直線距離 × 道路修正係數（台中市區約 1.35）
+const ROAD_FACTOR = 1.35;
+const BIKE_KMH = 13; // 市區騎車含紅燈
+
+function fmtDist(straightKm) {
+  const km = straightKm * ROAD_FACTOR;
+  const bikeMin = Math.round(km / BIKE_KMH * 60);
+  const walkMin = Math.round(km / 5 * 60);
+  if (km < 0.12) return `步行約 ${walkMin} 分鐘`;
+  if (bikeMin <= 2) return `騎車約 ${bikeMin} 分鐘（${Math.round(km * 1000)} 公尺）`;
+  return `騎車約 ${bikeMin} 分鐘`;
 }
 
 // ── STATE ──
@@ -146,7 +154,7 @@ function renderList(data) {
       const info = TYPE_LABELS[t];
       return info ? `<span class="tag-mini">${info.icon} ${info.label}</span>` : '';
     }).join('');
-    const distBadge = s.dist !== null ? `<span class="shop-card__dist">📍 ${fmtDist(s.dist)}</span>` : '';
+    const distBadge = s.dist !== null ? `<span class="shop-card__dist">🚴 ${fmtDist(s.dist)}</span>` : '';
     const favIcon = isFav(s.id) ? '❤️' : '🤍';
 
     return `
@@ -201,7 +209,7 @@ function openSheet(shop) {
     return info ? `<span class="tag ${info.cls}">${info.icon} ${info.label}</span>` : '';
   }).join('');
   const distLine = shop.dist !== null
-    ? `<div class="info-item"><div class="info-item__label">距你</div><div class="info-item__value">📍 ${fmtDist(shop.dist)}</div></div>`
+    ? `<div class="info-item"><div class="info-item__label">距你</div><div class="info-item__value">🚴 ${fmtDist(shop.dist)}<br><small style="color:#aaa;font-size:10px;font-weight:400">市區騎車預估</small></div></div>`
     : '';
 
   bottomSheet.innerHTML = `
