@@ -9,15 +9,33 @@ const TYPE_LABELS = {
   drink: { label: '豆漿飲料', icon: '🫘', cls: 'tag--drink' },
 };
 
+// Haversine distance in km
+function distKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 +
+            Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function fmtDist(km) {
+  if (km < 1) return `${Math.round(km * 1000)} 公尺`;
+  return `${km.toFixed(1)} 公里`;
+}
+
 let allData = [], filtered = [];
 let activeType = 'all', searchQuery = '';
+let userLat = null, userLng = null;
+let locating = false;
 
-const listEl      = document.getElementById('breakfast-list');
-const statsCount  = document.getElementById('stats-count');
-const searchInput = document.getElementById('search-input');
-const searchBtn   = document.getElementById('search-btn');
-const typeChips   = document.getElementById('type-chips');
-const btnLocate   = document.getElementById('btn-locate');
+const listEl       = document.getElementById('breakfast-list');
+const statsCount   = document.getElementById('stats-count');
+const statsLabel   = document.getElementById('stats-label');
+const searchInput  = document.getElementById('search-input');
+const searchBtn    = document.getElementById('search-btn');
+const typeChips    = document.getElementById('type-chips');
+const btnLocate    = document.getElementById('btn-locate');
 const sheetOverlay = document.getElementById('sheet-overlay');
 const bottomSheet  = document.getElementById('bottom-sheet');
 
@@ -26,56 +44,87 @@ const bottomSheet  = document.getElementById('bottom-sheet');
   allData = await res.json();
   buildMarquee(allData);
   initMap(openSheet);
-  applyFilters();
+  // Auto-locate on load
+  tryAutoLocate();
   setupEvents();
 })();
 
-// ── BUILD MARQUEE ──
-function buildMarquee(data) {
-  const track = document.getElementById('marquee-track');
-  if (!track) return;
+// ── AUTO LOCATE ON LOAD ──
+function tryAutoLocate() {
+  if (!navigator.geolocation) {
+    applyFilters();
+    return;
+  }
 
-  // Duplicate for infinite loop
-  const items = [...data, ...data].map(s => `
-    <div class="marquee-item" data-id="${s.id}">
-      <div class="marquee-item__icon" style="background:${s.color || '#f5f5f5'}">
-        ${s.icon}
-      </div>
-      <span class="marquee-item__name">${s.name}</span>
-    </div>
-  `).join('');
+  // Show locating state
+  listEl.innerHTML = `<p class="loading-msg">📍 正在定位中⋯</p>`;
+  locating = true;
 
-  track.innerHTML = items;
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      locating = false;
+      updateLocateBtn(true);
+      applyFilters();
+    },
+    () => {
+      // Permission denied or error — just load normally
+      locating = false;
+      applyFilters();
+    },
+    { timeout: 5000, maximumAge: 60000 }
+  );
+}
 
-  track.querySelectorAll('.marquee-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const shop = allData.find(s => s.id === el.dataset.id);
-      if (shop) openSheet(shop);
-    });
-  });
+function updateLocateBtn(located) {
+  if (!btnLocate) return;
+  if (located) {
+    btnLocate.textContent = '📍 已定位';
+    btnLocate.classList.add('btn-locate--active');
+  } else {
+    btnLocate.textContent = '📍 找我附近的';
+    btnLocate.classList.remove('btn-locate--active');
+  }
 }
 
 // ── FILTERS ──
 function applyFilters() {
   const q = searchQuery.trim().toLowerCase();
-  filtered = allData.filter(s => {
-    const matchType   = activeType === 'all' || s.types.includes(activeType);
-    const matchSearch = !q ||
-      s.name.toLowerCase().includes(q) ||
-      s.district.toLowerCase().includes(q) ||
-      s.tags.some(t => t.toLowerCase().includes(q)) ||
-      (s.specialty || '').toLowerCase().includes(q);
-    return matchType && matchSearch;
-  });
 
-  filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  filtered = allData
+    .filter(s => {
+      const matchType   = activeType === 'all' || s.types.includes(activeType);
+      const matchSearch = !q ||
+        s.name.toLowerCase().includes(q) ||
+        s.district.toLowerCase().includes(q) ||
+        (s.address || '').toLowerCase().includes(q) ||
+        s.tags.some(t => t.toLowerCase().includes(q)) ||
+        (s.specialty || '').toLowerCase().includes(q);
+      return matchType && matchSearch;
+    })
+    .map(s => ({
+      ...s,
+      dist: (userLat && s.lat) ? distKm(userLat, userLng, s.lat, s.lng) : null,
+    }));
+
+  // Sort: if we have location → by distance; otherwise featured first
+  if (userLat) {
+    filtered.sort((a, b) => (a.dist ?? 999) - (b.dist ?? 999));
+  } else {
+    filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  }
 
   statsCount.textContent = filtered.length;
+  if (statsLabel) {
+    statsLabel.textContent = userLat ? '間（依距離排序）' : '間';
+  }
+
   renderList(filtered);
   renderMarkers(filtered);
 }
 
-// ── RENDER CARDS (Findrink style) ──
+// ── RENDER CARDS ──
 function renderList(data) {
   if (!data.length) {
     listEl.innerHTML = `<p class="loading-msg">找不到符合的早餐店 😅<br><small>試試換個篩選條件</small></p>`;
@@ -89,6 +138,10 @@ function renderList(data) {
       return info ? `<span class="tag-mini">${info.icon} ${info.label}</span>` : '';
     }).join('');
 
+    const distBadge = s.dist !== null
+      ? `<span class="shop-card__dist">📍 ${fmtDist(s.dist)}</span>`
+      : '';
+
     return `
       <div class="shop-card" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.name}">
         <div class="shop-card__icon" style="background:${s.color || '#f5f5f5'}">${s.icon}</div>
@@ -98,8 +151,9 @@ function renderList(data) {
             <span>${s.district}</span>
             <span class="shop-card__dot">·</span>
             <span class="${open ? 'shop-card__status-open' : 'shop-card__status-close'}">
-              ${open ? '● 現在開門' : '○ 目前休息'}
+              ${open ? '● 開門中' : '○ 休息中'}
             </span>
+            ${distBadge ? `<span class="shop-card__dot">·</span>${distBadge}` : ''}
           </div>
           <div class="shop-card__tags">${tags}</div>
         </div>
@@ -111,12 +165,10 @@ function renderList(data) {
 
   listEl.querySelectorAll('.shop-card').forEach(el => {
     el.addEventListener('click', () => {
-      const shop = allData.find(s => s.id === el.dataset.id);
+      const shop = filtered.find(s => s.id === el.dataset.id);
       if (shop) openSheet(shop);
     });
-    el.addEventListener('keydown', e => {
-      if (e.key === 'Enter') el.click();
-    });
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') el.click(); });
   });
 }
 
@@ -130,12 +182,16 @@ function openSheet(shop) {
     return info ? `<span class="tag ${info.cls}">${info.icon} ${info.label}</span>` : '';
   }).join('');
 
+  const distLine = shop.dist !== null
+    ? `<div class="info-item"><div class="info-item__label">距你</div><div class="info-item__value">📍 ${fmtDist(shop.dist)}</div></div>`
+    : '';
+
   bottomSheet.innerHTML = `
     <div class="sheet-handle"></div>
     <div class="sheet-body">
       <div class="sheet-icon-wrap" style="background:${shop.color || '#f5f5f5'}">${shop.icon}</div>
       <div class="sheet-name">${shop.name}</div>
-      <div class="sheet-location">📍 ${shop.city} ${shop.district}</div>
+      <div class="sheet-location">📍 台中市 ${shop.district}</div>
       <div class="sheet-tags">${tags}</div>
       <p class="sheet-desc">${shop.desc}</p>
       <div class="sheet-info">
@@ -162,16 +218,15 @@ function openSheet(shop) {
           <div class="info-item__label">公休</div>
           <div class="info-item__value">${shop.closedDay}</div>
         </div>` : ''}
+        ${distLine}
       </div>
       <div class="sheet-actions">
         <a class="sheet-btn sheet-btn--primary"
-           href="https://www.google.com/maps/search/${encodeURIComponent(shop.name + ' ' + shop.district + ' 台中')}"
+           href="https://www.google.com/maps/search/${encodeURIComponent(shop.name + ' ' + shop.address || shop.district + ' 台中市')}"
            target="_blank" rel="noopener">
-          🗺️ Google Maps
+          🗺️ Google Maps 導航
         </a>
-        <button class="sheet-btn sheet-btn--ghost" id="sheet-close">
-          ✕ 關閉
-        </button>
+        <button class="sheet-btn sheet-btn--ghost" id="sheet-close">✕ 關閉</button>
       </div>
     </div>
   `;
@@ -185,6 +240,25 @@ function closeSheet() {
   sheetOverlay.classList.remove('sheet-overlay--open');
   bottomSheet.classList.remove('bottom-sheet--open');
   resetView();
+}
+
+// ── MARQUEE ──
+function buildMarquee(data) {
+  const track = document.getElementById('marquee-track');
+  if (!track) return;
+  const items = [...data, ...data].map(s => `
+    <div class="marquee-item" data-id="${s.id}">
+      <div class="marquee-item__icon" style="background:${s.color || '#f5f5f5'}">${s.icon}</div>
+      <span class="marquee-item__name">${s.name}</span>
+    </div>
+  `).join('');
+  track.innerHTML = items;
+  track.querySelectorAll('.marquee-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const shop = allData.find(s => s.id === el.dataset.id);
+      if (shop) openSheet(shop);
+    });
+  });
 }
 
 // ── EVENTS ──
@@ -203,16 +277,22 @@ function setupEvents() {
   });
 
   btnLocate?.addEventListener('click', () => {
-    locateUser((lat, lng) => {
-      const near = allData
-        .map(s => ({ ...s, dist: s.lat ? Math.hypot(s.lat - lat, s.lng - lng) : Infinity }))
-        .sort((a, b) => a.dist - b.dist)
-        .slice(0, 8);
-      filtered = near;
-      statsCount.textContent = filtered.length;
-      renderList(filtered);
-      renderMarkers(filtered);
-    });
+    if (!navigator.geolocation) return;
+    btnLocate.textContent = '⏳ 定位中...';
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        userLat = pos.coords.latitude;
+        userLng = pos.coords.longitude;
+        updateLocateBtn(true);
+        applyFilters();
+        // Scroll to list
+        document.getElementById('list-section')?.scrollIntoView({ behavior: 'smooth' });
+      },
+      () => {
+        btnLocate.textContent = '📍 找我附近的';
+      },
+      { timeout: 8000 }
+    );
   });
 
   sheetOverlay.addEventListener('click', closeSheet);
