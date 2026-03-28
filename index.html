@@ -3,201 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MORNING TW — 全台灣早餐地圖</title>
-  <meta name="description" content="全台灣最完整的傳統早餐地圖。豆漿蛋餅、牛肉湯、火雞肉飯、虱目魚粥，找到你的早晨第一口。">
-  <meta property="og:title" content="MORNING TW — 全台灣早餐地圖">
-  <meta property="og:description" content="從台北豆漿到台南牛肉湯，找遍全台灣最道地的早餐。">
-  <meta property="og:type" content="website">
+  <title>MORNING TW — 台中早餐地圖</title>
+  <meta name="description" content="台中人自己整理的在地早餐地圖。傳統老店、市場早點、在地限定，找到你的台中早晨第一口。">
+  <meta property="og:title" content="MORNING TW — 台中早餐地圖">
+  <meta property="og:description" content="台中人才知道的在地早餐，傳統市場、老字號、在地限定。">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/style.css">
   <style>
-    /* ── MAP PIN STYLES ── */
     .map-pin {
-      width: 36px;
-      height: 36px;
+      width: 32px; height: 32px;
       background: #fff;
       border: 2px solid var(--accent);
       border-radius: 50% 50% 50% 0;
       transform: rotate(-45deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-
-    .map-pin span {
-      transform: rotate(45deg);
-      font-size: 16px;
-      line-height: 1;
-    }
-
-    .map-pin--featured {
-      background: var(--accent);
-      border-color: var(--accent-dark);
-    }
-
-    .map-pin--active {
-      transform: rotate(-45deg) scale(1.3);
-      box-shadow: 0 4px 16px rgba(245,166,35,0.5);
-      z-index: 999;
-    }
-
-    .leaflet-container {
-      font-family: inherit;
-    }
+    .map-pin span { transform: rotate(45deg); font-size: 14px; line-height: 1; }
+    .map-pin--featured { background: var(--accent); border-color: var(--accent-dark); }
+    .map-pin--active { transform: rotate(-45deg) scale(1.3); box-shadow: 0 4px 16px rgba(245,166,35,0.5); }
+    .leaflet-container { font-family: inherit; }
   </style>
 </head>
 <body>
 
   <!-- TOP NAV -->
-  <header class="top-nav" id="top-nav">
-    <div class="top-nav__logo">MORNING <em>TW</em></div>
-    <div class="top-nav__right">
-      <nav class="top-nav__links" aria-label="主選單">
-        <a href="#map-section">地圖</a>
-        <a href="#regions-section">各地早餐</a>
-        <a href="#about-section">關於</a>
-      </nav>
-      <button class="btn-accent"
-        onclick="document.getElementById('filter-section').scrollIntoView({behavior:'smooth'})">
-        找早餐 🌅
-      </button>
-    </div>
+  <header class="nav">
+    <div class="nav__logo">MORNING <em>TW</em></div>
+    <nav class="nav__links">
+      <a href="#list-section">早餐店</a>
+      <a href="#map-section">地圖</a>
+    </nav>
+    <a href="#hero" class="nav__cta">找早餐 ↑</a>
   </header>
 
-  <!-- HERO STRIP -->
-  <div class="hero-strip">
-    <div class="hero-strip__inner">
-      <div class="hero-strip__brand">
-        <div class="hero-strip__title">MORNING <em>TW</em></div>
-        <div class="hero-strip__sub">全台灣早餐地圖 · 豆漿蛋餅・牛肉湯・火雞肉飯・虱目魚 · Find Taiwan's First Bite</div>
-      </div>
-      <div class="search-bar" role="search">
-        <span class="search-bar__icon" aria-hidden="true">🔍</span>
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" id="hero">
+    <div class="hero__inner">
+      <div class="hero__badge">🥚 台中早餐地圖</div>
+      <h1 class="hero__title">MORNING TW<br><em>找早餐</em></h1>
+      <p class="hero__desc">台中人自己整理的在地早餐。傳統老店、市場早點、在地限定。<br>讓外縣市人看了羨慕的台中早晨。</p>
+
+      <!-- BIG SEARCH -->
+      <div class="hero__search" role="search">
+        <span class="hero__search-icon">🔍</span>
         <input
           id="search-input"
           type="search"
-          placeholder="搜尋店名、縣市或食物..."
+          placeholder="搜尋店名、地區或食物..."
           autocomplete="off"
           aria-label="搜尋早餐店"
         >
-        <button class="search-bar__btn" id="search-btn">搜尋</button>
+        <button id="search-btn" class="hero__search-btn">搜尋</button>
+      </div>
+      <a href="#list-section" class="hero__browse">瀏覽所有早餐店 →</a>
+    </div>
+
+    <!-- MARQUEE -->
+    <div class="marquee-wrap" aria-hidden="true">
+      <div class="marquee">
+        <div class="marquee__track" id="marquee-track">
+          <!-- filled by JS -->
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- PAGE LAYOUT -->
-  <div class="page-layout">
+  <!-- ═══ FILTER + LIST ═══ -->
+  <section class="list-section" id="list-section">
+    <div class="list-section__inner">
 
-    <div class="page-sidebar">
-
-      <!-- FILTER SECTION -->
-      <section class="filter-section" id="filter-section" aria-label="篩選條件">
-        <div class="filter-label">食物類型</div>
-        <div class="chips-row" role="group" aria-label="類型篩選" id="type-chips">
-          <button class="chip chip--active" data-type="all">🌅 全部</button>
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <div class="filter-bar__chips" id="type-chips">
+          <button class="chip chip--active" data-type="all">全部</button>
           <button class="chip" data-type="egg">🥚 蛋餅燒餅</button>
           <button class="chip" data-type="rice">🍚 飯糰粥</button>
           <button class="chip" data-type="soup">🍜 湯品</button>
           <button class="chip" data-type="local">📍 在地特色</button>
           <button class="chip" data-type="drink">🫘 豆漿飲料</button>
         </div>
-
-        <div class="filter-label" style="margin-top:4px">地區</div>
-        <div class="region-tabs" role="tablist" aria-label="地區" id="region-tabs">
-          <button class="rtab rtab--active" role="tab" data-region="all">全台灣</button>
-          <button class="rtab" role="tab" data-region="北部">北部</button>
-          <button class="rtab" role="tab" data-region="中部">中部</button>
-          <button class="rtab" role="tab" data-region="南部">南部</button>
-          <button class="rtab" role="tab" data-region="東部">東部</button>
-          <button class="rtab" role="tab" data-region="離島">離島</button>
+        <div class="filter-bar__stats" id="stats-bar">
+          找到 <strong id="stats-count">0</strong> 間
         </div>
-      </section>
-
-      <!-- MAP SECTION -->
-      <section class="map-section" id="map-section" aria-label="台灣地圖">
-        <div class="map-section__header">
-          <h2>📍 早餐地圖 <span>點圖示看店家</span></h2>
-          <button class="btn-locate" id="btn-locate" aria-label="找我附近的早餐店">
-            📍 找我附近的
-          </button>
-        </div>
-        <div class="map-wrapper">
-          <div id="map-container" role="img" aria-label="台灣早餐地圖"></div>
-        </div>
-      </section>
-
-      <!-- STATS BAR -->
-      <div class="stats-bar" id="stats-bar" aria-live="polite">
-        找到 <strong id="stats-count">0</strong> 間早餐店 · 全台 22 縣市 · 持續更新中
       </div>
 
-    </div><!-- /page-sidebar -->
+      <!-- GRID -->
+      <div class="shop-grid" id="breakfast-list">
+        <p class="loading-msg">載入中⋯</p>
+      </div>
 
-    <!-- BREAKFAST LIST -->
-    <main class="breakfast-list" id="breakfast-list" aria-label="早餐店列表">
-      <p class="loading-msg" id="loading-msg">載入中⋯</p>
-    </main>
-
-  </div><!-- /page-layout -->
-
-  <!-- REGIONS SECTION -->
-  <section id="regions-section" aria-label="各地早餐">
-    <div class="section-header">
-      <div class="section-label">🗺️ Explore Taiwan</div>
-      <h2 class="section-title">各地都有<em>不同的早晨</em></h2>
-      <p class="section-sub">從北到南，從東到西，每個縣市都有自己的早餐文化</p>
-    </div>
-    <div class="region-showcase">
-      <div class="region-showcase__grid" id="region-grid"></div>
     </div>
   </section>
 
-  <!-- ABOUT SECTION -->
-  <section id="about-section" aria-label="關於 MORNING TW">
-    <div class="section-header" style="padding-bottom: 32px;">
-      <div class="section-label">☀️ About</div>
-      <h2 class="section-title">台灣的早晨，<em>值得被記錄</em></h2>
-      <p class="section-sub" style="max-width: 480px; margin-top: 10px;">
-        台灣有全世界最多元的早餐文化。北部的豆漿燒餅、南部的牛肉湯、東部的包子、離島的海鮮粥——每一口都是在地人的日常，也是旅人的驚喜。<br><br>
-        MORNING TW 致力於記錄並分享這些即將消逝或值得被更多人知道的傳統早餐店。
-      </p>
+  <!-- ═══ MAP ═══ -->
+  <section class="map-section" id="map-section">
+    <div class="map-section__inner">
+      <div class="map-section__header">
+        <h2>台中早餐地圖 <span>點圖示看店家</span></h2>
+        <button class="btn-locate" id="btn-locate">📍 找我附近的</button>
+      </div>
+      <div class="map-wrap">
+        <div id="map-container"></div>
+      </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="site-footer__logo">MORNING <em>TW</em></div>
-    <p>全台灣早餐文化地圖 · Find Taiwan's First Bite</p>
-    <p>收錄傳統早餐店 · 在地特色早點 · 持續更新</p>
-    <p class="site-footer__copy">© 2026 MORNING TW</p>
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer__logo">MORNING <em>TW</em></div>
+    <p>台中人自己整理的在地早餐地圖</p>
+    <p class="footer__copy">© 2026 MORNING TW</p>
   </footer>
 
-  <!-- BOTTOM NAV (mobile only) -->
-  <nav class="bottom-nav" aria-label="底部導覽">
-    <button class="bottom-nav__item bottom-nav__item--active"
-      onclick="window.scrollTo({top:0,behavior:'smooth'})">
-      <span aria-hidden="true">🏠</span>首頁
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="bnav__item bnav__item--active" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <span>🏠</span>首頁
     </button>
-    <button class="bottom-nav__item"
-      onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})">
-      <span aria-hidden="true">🗺️</span>地圖
+    <button class="bnav__item" onclick="document.getElementById('list-section').scrollIntoView({behavior:'smooth'})">
+      <span>🍳</span>早餐店
     </button>
-    <button class="bottom-nav__item"
-      onclick="document.getElementById('search-input').focus();window.scrollTo({top:0,behavior:'smooth'})">
-      <span aria-hidden="true">🔍</span>搜尋
+    <button class="bnav__item" onclick="document.getElementById('search-input').focus();window.scrollTo({top:0,behavior:'smooth'})">
+      <span>🔍</span>搜尋
     </button>
-    <button class="bottom-nav__item"
-      onclick="document.getElementById('btn-locate').click()">
-      <span aria-hidden="true">📍</span>附近
+    <button class="bnav__item" onclick="document.getElementById('btn-locate').click()">
+      <span>📍</span>附近
     </button>
   </nav>
 
-  <!-- BOTTOM SHEET -->
+  <!-- SHEET -->
   <div class="sheet-overlay" id="sheet-overlay"></div>
   <div class="bottom-sheet" id="bottom-sheet" role="dialog" aria-modal="true"></div>
 

@@ -1,80 +1,58 @@
-// ── MORNING TW — Map Module ──
-import { TYPE_LABELS } from './data.js';
+// ── MORNING TW — Map ──
+let map = null, markers = [];
 
-let map = null;
-let markers = [];
-let activeMarkerId = null;
-
-const TAIWAN_CENTER = [23.5, 121.0];
-const DEFAULT_ZOOM = 7;
+const TAICHUNG_CENTER = [24.148, 120.674];
+const DEFAULT_ZOOM = 12;
 
 export function initMap(onMarkerClick) {
   if (map) return;
-
   map = L.map('map-container', {
-    center: TAIWAN_CENTER,
+    center: TAICHUNG_CENTER,
     zoom: DEFAULT_ZOOM,
     zoomControl: false,
     attributionControl: false,
   });
-
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-  }).addTo(map);
-
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
-
-  window._mapOnMarkerClick = onMarkerClick;
+  window._mapClick = onMarkerClick;
 }
 
 export function renderMarkers(data) {
   markers.forEach(m => m.marker.remove());
   markers = [];
-
-  data.forEach(shop => {
-    if (!shop.lat || !shop.lng) return;
-
+  data.forEach(s => {
+    if (!s.lat || !s.lng) return;
     const icon = L.divIcon({
       className: '',
-      html: `<div class="map-pin${shop.featured ? ' map-pin--featured' : ''}" data-id="${shop.id}">
-        <span>${shop.icon}</span>
-      </div>`,
-      iconSize: [36, 36],
-      iconAnchor: [18, 36],
+      html: `<div class="map-pin${s.featured ? ' map-pin--featured' : ''}" data-id="${s.id}"><span>${s.icon}</span></div>`,
+      iconSize: [32, 32], iconAnchor: [16, 32],
     });
-
-    const marker = L.marker([shop.lat, shop.lng], { icon })
+    const marker = L.marker([s.lat, s.lng], { icon })
       .addTo(map)
-      .on('click', () => window._mapOnMarkerClick(shop));
-
-    markers.push({ id: shop.id, marker });
+      .on('click', () => window._mapClick(s));
+    markers.push({ id: s.id, marker });
   });
 }
 
 export function focusShop(shop) {
   if (!map || !shop.lat) return;
   map.flyTo([shop.lat, shop.lng], 15, { duration: 0.8 });
-  setActiveMarker(shop.id);
+  document.querySelectorAll('.map-pin').forEach(el => {
+    el.classList.toggle('map-pin--active', el.dataset.id === shop.id);
+  });
 }
 
 export function resetView() {
   if (!map) return;
-  map.flyTo(TAIWAN_CENTER, DEFAULT_ZOOM, { duration: 0.6 });
-  setActiveMarker(null);
-}
-
-function setActiveMarker(id) {
-  document.querySelectorAll('.map-pin').forEach(el => {
-    el.classList.toggle('map-pin--active', el.dataset.id === id);
-  });
-  activeMarkerId = id;
+  map.flyTo(TAICHUNG_CENTER, DEFAULT_ZOOM, { duration: 0.6 });
+  document.querySelectorAll('.map-pin').forEach(el => el.classList.remove('map-pin--active'));
 }
 
 export function locateUser(onResult) {
   if (!navigator.geolocation) return;
   navigator.geolocation.getCurrentPosition(pos => {
-    const { latitude, longitude } = pos.coords;
-    if (map) map.flyTo([latitude, longitude], 14, { duration: 0.8 });
-    onResult(latitude, longitude);
+    const { latitude: lat, longitude: lng } = pos.coords;
+    if (map) map.flyTo([lat, lng], 14, { duration: 0.8 });
+    onResult(lat, lng);
   });
 }
