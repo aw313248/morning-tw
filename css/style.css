@@ -205,36 +205,33 @@ img { display: block; max-width: 100%; }
 
 .list-section__inner { padding: 32px 24px 60px; }
 
-/* SORT BAR */
+/* SORT + FILTER — 分兩層，層次清楚 */
 .sort-bar {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 10px;
+  overflow-x: auto; flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; padding-bottom: 2px;
 }
+.sort-bar::-webkit-scrollbar { display: none; }
 
 .sort-bar__label {
-  font-size: 11px; font-weight: 700; color: #aaa;
+  font-size: 10px; font-weight: 700; color: #bbb;
   text-transform: uppercase; letter-spacing: 0.5px;
-  margin-right: 4px;
+  white-space: nowrap; flex-shrink: 0;
 }
 
 .sort-tab {
-  height: 36px; padding: 0 16px;
+  height: 32px; padding: 0 14px;
   border-radius: 100px;
-  border: 1.5px solid rgba(0,0,0,0.1);
-  background: #fff;
-  font-size: 13px; font-weight: 600; color: #666;
-  transition: all 0.15s;
-  white-space: nowrap;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  font-size: 12px; font-weight: 600; color: var(--text-muted);
+  transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
 }
-
 .sort-tab:hover { border-color: #111; color: #111; }
-
 .sort-tab--active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(245,166,35,0.3);
+  background: #111; border-color: #111; color: #fff;
 }
 
 /* FILTER BAR */
@@ -325,8 +322,9 @@ img { display: block; max-width: 100%; }
 .shop-card__icon {
   width: 48px; height: 48px;
   border-radius: 12px;
+  background: #F2F2F2;
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
+  font-size: 22px;
   flex-shrink: 0;
 }
 
@@ -499,11 +497,12 @@ img { display: block; max-width: 100%; }
 .sheet-body { padding: 4px 22px 32px; }
 
 .sheet-icon-wrap {
-  width: 72px; height: 72px;
-  border-radius: 18px;
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: #F2F2F2;
   display: flex; align-items: center; justify-content: center;
-  font-size: 40px;
-  margin-bottom: 14px;
+  font-size: 30px;
+  flex-shrink: 0;
 }
 
 .sheet-name {
@@ -525,11 +524,10 @@ img { display: block; max-width: 100%; }
   padding: 4px 10px; border-radius: 100px;
 }
 
-.tag--egg    { background: #FFF3E0; color: #E65100; }
-.tag--rice   { background: #E8F5E9; color: #2E7D32; }
-.tag--soup   { background: #E3F2FD; color: #1565C0; }
-.tag--local  { background: #F3E5F5; color: #6A1B9A; }
-.tag--drink  { background: #FFF8E1; color: #F57F17; }
+.tag--egg, .tag--rice, .tag--soup, .tag--local, .tag--drink {
+  background: var(--tag-bg);
+  color: var(--tag-text);
+}
 
 .sheet-desc {
   font-size: 14px; color: #444; line-height: 1.75;

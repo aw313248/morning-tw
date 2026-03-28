@@ -1,6 +1,20 @@
 // ── MORNING TW — App ──
 import { initMap, renderMarkers, focusShop, resetView } from './map.js';
-import { fetchComments, addComment } from './supabase.js';
+
+// Supabase 懶加載，不阻塞主程式
+let _supabase = null;
+async function getSupabase() {
+  if (_supabase) return _supabase;
+  try {
+    _supabase = await import('./supabase.js');
+  } catch(e) {
+    console.warn('Supabase 載入失敗，留言板暫時停用', e);
+    _supabase = { fetchComments: async () => [], addComment: async () => { throw new Error('offline'); } };
+  }
+  return _supabase;
+}
+async function fetchComments(id) { return (await getSupabase()).fetchComments(id); }
+async function addComment(payload) { return (await getSupabase()).addComment(payload); }
 
 const TYPE_LABELS = {
   egg:         { label: '蛋餅燒餅',   icon: '🍳', cls: 'tag--egg' },
@@ -159,7 +173,7 @@ function renderList(data) {
 
     return `
       <div class="shop-card${s.chain ? ' shop-card--chain' : ''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.name}">
-        <div class="shop-card__icon" style="background:${s.color || '#f5f5f5'}">${s.icon}</div>
+        <div class="shop-card__icon">${s.icon}</div>
         <div class="shop-card__body">
           <div class="shop-card__name">${s.name}</div>
           <div class="shop-card__meta">
@@ -216,7 +230,7 @@ function openSheet(shop) {
     <div class="sheet-handle"></div>
     <div class="sheet-body">
       <div class="sheet-header-row">
-        <div class="sheet-icon-wrap" style="background:${shop.color || '#f5f5f5'}">${shop.icon}</div>
+        <div class="sheet-icon-wrap">${shop.icon}</div>
         <div class="sheet-header-info">
           <div class="sheet-name">${shop.name}</div>
           <div class="sheet-location">📍 台中市 ${shop.district}</div>
