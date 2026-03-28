@@ -2,11 +2,13 @@
 import { initMap, renderMarkers, focusShop, resetView, locateUser } from './map.js';
 
 const TYPE_LABELS = {
-  egg:   { label: '蛋餅燒餅', icon: '🥚', cls: 'tag--egg' },
-  rice:  { label: '飯糰粥',   icon: '🍚', cls: 'tag--rice' },
-  soup:  { label: '湯品',     icon: '🍜', cls: 'tag--soup' },
-  local: { label: '在地特色', icon: '📍', cls: 'tag--local' },
-  drink: { label: '豆漿飲料', icon: '🫘', cls: 'tag--drink' },
+  egg:         { label: '蛋餅燒餅',   icon: '🍳', cls: 'tag--egg' },
+  rice:        { label: '飯糰粥',     icon: '🍙', cls: 'tag--rice' },
+  soup:        { label: '湯品',       icon: '🥣', cls: 'tag--soup' },
+  local:       { label: '在地特色',   icon: '🏮', cls: 'tag--local' },
+  drink:       { label: '豆漿飲料',   icon: '☕', cls: 'tag--drink' },
+  traditional: { label: '傳統早餐',   icon: '🍳', cls: 'tag--egg' },
+  western:     { label: '西式早午餐', icon: '🥐', cls: 'tag--local' },
 };
 
 // Haversine distance in km
@@ -97,7 +99,10 @@ function applyFilters() {
 
   filtered = allData
     .filter(s => {
-      const matchType     = activeType === 'all' || s.types.includes(activeType);
+      let matchType;
+      if (activeType === 'all') matchType = true;
+      else if (activeType === 'traditional' || activeType === 'western') matchType = s.category === activeType;
+      else matchType = s.types.includes(activeType);
       const matchDistrict = activeDistrict === 'all' || s.district === activeDistrict;
       const matchSearch = !q ||
         s.name.toLowerCase().includes(q) ||
@@ -159,7 +164,7 @@ function renderList(data) {
       : '';
 
     return `
-      <div class="shop-card" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.name}">
+      <div class="shop-card${s.chain ? ' shop-card--chain' : ''}" data-id="${s.id}" role="button" tabindex="0" aria-label="${s.name}">
         <div class="shop-card__icon" style="background:${s.color || '#f5f5f5'}">${s.icon}</div>
         <div class="shop-card__body">
           <div class="shop-card__name">${s.name}</div>

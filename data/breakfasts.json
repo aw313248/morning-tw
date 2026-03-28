@@ -27,7 +27,9 @@
     "userFavorite": true,
     "popularity": 9,
     "icon": "🍳",
-    "color": "#FFF3E0"
+    "color": "#FFF3E0",
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc001",
@@ -56,9 +58,11 @@
     "price": "25–60",
     "desc": "台中第五市場內的老字號，在地飄香60年。手工現做的包子皮薄餡多，飯糰料實在，搭配現磨豆漿，全餐不到百元。是台中人最懷念的早晨滋味。",
     "featured": true,
-    "icon": "🥟",
+    "icon": "🍳",
     "color": "#FFF3E0",
-    "popularity": 8
+    "popularity": 8,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc002",
@@ -84,9 +88,11 @@
     "price": "40–90",
     "desc": "傳承南投70年老技法，燒餅有多達16種口味，外皮酥脆帶芝麻香，現烤現賣，是台中少見的燒餅專門店。",
     "featured": false,
-    "icon": "🫓",
+    "icon": "🍳",
     "color": "#FFF8E1",
-    "popularity": 7
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc003",
@@ -113,9 +119,11 @@
     "price": "35–80",
     "desc": "台中北區的排隊名店，牛肉蛋餅是招牌，豆漿現磨香濃，每天開門前就有人在等，是台中人口耳相傳的早晨必訪。",
     "featured": true,
-    "icon": "🥚",
+    "icon": "🍳",
     "color": "#F3E5F5",
-    "popularity": 9
+    "popularity": 9,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc004",
@@ -142,9 +150,11 @@
     "price": "80–150",
     "desc": "台中少見的溫體牛肉湯，堅持使用台灣本土牛，現宰現川燙，甜嫩不腥，是台中人心中媲美台南牛肉湯的在地版本，早起才吃得到。",
     "featured": true,
-    "icon": "🥩",
+    "icon": "🥣",
     "color": "#FFEBEE",
-    "popularity": 8
+    "popularity": 8,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc005",
@@ -173,9 +183,11 @@
     "price": "50–100",
     "desc": "台中第一市場已有百年歷史，早上最熱鬧。市場內的老攤紅燒肉，裹粉油炸後淋上特製醬汁，配上豬血湯，是台中最道地、外縣市人完全沒見過的早餐。",
     "featured": true,
-    "icon": "🏮",
+    "icon": "🍙",
     "color": "#FBE9E7",
-    "popularity": 9
+    "popularity": 9,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc006",
@@ -203,9 +215,11 @@
     "price": "40–70",
     "desc": "70年老店，堅持用豬油炸製的傳統肉圓。外皮Q彈帶脆，豬肉餡飽滿鮮嫩，醬汁甜辣入味。是北屯在地人從小吃到大的早晨記憶，油條老式早點鋪的延伸。",
     "featured": false,
-    "icon": "🔵",
+    "icon": "🏮",
     "color": "#E3F2FD",
-    "popularity": 6
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc007",
@@ -233,9 +247,11 @@
     "price": "40–80",
     "desc": "台中老口碑早餐店，以炒麵和肉燥飯聞名在地。用豬油大火翻炒的麵條，香氣四溢，肉燥飯滷汁濃郁，是台中人才懂的早晨療癒食物。",
     "featured": false,
-    "icon": "🍜",
+    "icon": "🍙",
     "color": "#E8F5E9",
-    "popularity": 7
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc008",
@@ -263,9 +279,11 @@
     "price": "30–70",
     "desc": "南屯黎明路上的傳統豆漿早點店，每天清晨五點就開始飄香。鹹豆漿加上現炸油條，燒餅外酥內軟，是南屯人上班前的早晨儀式。",
     "featured": false,
-    "icon": "🫘",
+    "icon": "🍳",
     "color": "#FFF9C4",
-    "popularity": 6
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc009",
@@ -292,9 +310,11 @@
     "price": "35–80",
     "desc": "東海大學周邊商圈的早餐聚集地，學生與教授都來這裡吃早餐。質感小店多，從傳統蛋餅到創意三明治都有，氛圍輕鬆，是台中文青早餐的代表。",
     "featured": false,
-    "icon": "🎓",
+    "icon": "🍳",
     "color": "#EDE7F6",
-    "popularity": 7
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc010",
@@ -323,7 +343,9 @@
     "featured": true,
     "icon": "🍙",
     "color": "#E0F7FA",
-    "popularity": 9
+    "popularity": 9,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc011",
@@ -351,9 +373,11 @@
     "price": "120–250",
     "desc": "勤美誠品周邊的質感早午餐，是台中白領族週末的聚集地。班尼迪克蛋與法式吐司是招牌，搭配精品咖啡，是台中最有氛圍感的早晨體驗。",
     "featured": false,
-    "icon": "🌿",
+    "icon": "🥐",
     "color": "#E8F5E9",
-    "popularity": 7
+    "popularity": 7,
+    "category": "western",
+    "chain": false
   },
   {
     "id": "tc012",
@@ -380,9 +404,11 @@
     "price": "40–80",
     "desc": "中科園區周邊的蛋餅專門店，以多達20種蛋餅口味聞名，從傳統蔥花到起司培根玉米，是中科工程師每天排隊的早晨補給站。",
     "featured": false,
-    "icon": "🥚",
+    "icon": "🍳",
     "color": "#FFF3E0",
-    "popularity": 7
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc013",
@@ -410,9 +436,11 @@
     "price": "40–70",
     "desc": "台中大坑爬山後必去的鹹粥老攤。用地瓜或肉燥煮成的稀粥，入口溫潤，是大坑登山客每次下山後的最佳早餐。週末人潮絡繹不絕。",
     "featured": false,
-    "icon": "🍲",
+    "icon": "🥣",
     "color": "#FBE9E7",
-    "popularity": 6
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc014",
@@ -440,9 +468,11 @@
     "price": "30–60",
     "desc": "台中西區向上市場裡的燒餅豆漿老攤，每天清晨就排滿人。厚實的燒餅外脆內軟，現磨豆漿香濃，是西區在地居民幾十年來不變的早晨習慣。",
     "featured": false,
-    "icon": "🫘",
+    "icon": "🍳",
     "color": "#FFF8E1",
-    "popularity": 7
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc015",
@@ -470,9 +500,11 @@
     "price": "35–65",
     "desc": "台中老市場裡的米粉湯老攤，以豬骨熬製的濃郁湯底搭配細米粉，配上豬血糕和煸蔥，是台中人最懷念的古早味早點之一。",
     "featured": false,
-    "icon": "🍜",
+    "icon": "🥣",
     "color": "#E0F7FA",
-    "popularity": 6
+    "popularity": 6,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc016",
@@ -500,9 +532,11 @@
     "price": "30–70",
     "desc": "1983年創立，南區飄香超過40年。燒餅油條被在地人封為南區最好吃，豬肉餡餅皮薄多汁，蔥肉餅香氣逼人。每天大排長龍，餡餅10點前就常售罄，要早點去。",
     "featured": true,
-    "icon": "🫓",
+    "icon": "🍳",
     "color": "#FFF8E1",
-    "popularity": 9
+    "popularity": 9,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc017",
@@ -531,9 +565,11 @@
     "price": "25–60",
     "desc": "南區建成路上老夫妻守護30年的傳統早餐店，鄰近建國市場與興大附農。粉漿蛋餅口感Q軟帶麵香，碗糕蒸得扎實入味，是附近居民每天報到的早晨記憶。",
     "featured": false,
-    "icon": "🥚",
+    "icon": "🍳",
     "color": "#F3E5F5",
-    "popularity": 7
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc018",
@@ -561,9 +597,11 @@
     "price": "35–80",
     "desc": "南區仁和路上24小時不打烊的古早味炒麵店。招牌炒麵配東泉辣椒醬是台中人的標配，不管幾點想吃，這裡都有熱騰騰的台中傳統滋味，是南區的深夜食堂兼早餐店。",
     "featured": false,
-    "icon": "🍜",
+    "icon": "🍙",
     "color": "#E8F5E9",
-    "popularity": 8
+    "popularity": 8,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc019",
@@ -592,7 +630,9 @@
     "featured": true,
     "icon": "🍙",
     "color": "#EDE7F6",
-    "popularity": 8
+    "popularity": 8,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc020",
@@ -620,9 +660,11 @@
     "price": "25–40",
     "desc": "南屯老街上毫無招牌的傳統早餐攤，在地人口耳相傳的隱藏美食。麵糊蛋餅餅皮金黃微焦、柔軟帶麵香，25元起，品項超過10樣，賣完就收，晚來就吃不到。",
     "featured": true,
-    "icon": "🥚",
+    "icon": "🍳",
     "color": "#FFF9C4",
-    "popularity": 8
+    "popularity": 8,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc021",
@@ -651,9 +693,11 @@
     "price": "20–60",
     "desc": "南屯在地人帶路的傳統中式早午餐，炒麵上鋪滿豆芽菜淋特製肉燥，豬血湯一大碗只要20元，是全台中CP值最高的早餐之一。在地老台中人的早晨儀式。",
     "featured": false,
-    "icon": "🍜",
+    "icon": "🍙",
     "color": "#E0F2F1",
-    "popularity": 7
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc022",
@@ -681,9 +725,11 @@
     "price": "30–80",
     "desc": "南屯在地人推爆的隱藏版早餐店，清晨5點即飄香。燒餅全是手工現擀現烤，灑滿白芝麻，獨家蔥花特調醬是靈魂所在。蛋餅夾油條是必嘗的創意吃法，平日7–9點人潮最多。",
     "featured": true,
-    "icon": "🫘",
+    "icon": "🍳",
     "color": "#FFF3E0",
-    "popularity": 8
+    "popularity": 8,
+    "category": "traditional",
+    "chain": false
   },
   {
     "id": "tc023",
@@ -711,8 +757,10 @@
     "price": "40–80",
     "desc": "南屯老街超過60年的老麵店，餛飩與魚丸全是自製。陽春麵一碗40元，肉燥份量豪邁，是外地人來南屯老街必吃的名店。早上就開賣，到訪南屯的第一站。",
     "featured": false,
-    "icon": "🍜",
+    "icon": "🥣",
     "color": "#E3F2FD",
-    "popularity": 7
+    "popularity": 7,
+    "category": "traditional",
+    "chain": false
   }
 ]
