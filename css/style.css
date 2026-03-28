@@ -591,6 +591,7 @@ body[data-view="map"] #map-container { height: 100% !important; }
   cursor: pointer;
   transition: box-shadow 0.2s, transform 0.2s;
   position: relative;
+  contain: layout style;
 }
 
 .shop-card:hover {
@@ -813,8 +814,9 @@ body[data-view="map"] #map-container { height: 100% !important; }
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   max-height: 85vh; overflow-y: auto;
   padding-bottom: env(safe-area-inset-bottom, 20px);
+  pointer-events: none;
 }
-.bottom-sheet--open { transform: translateY(0); }
+.bottom-sheet--open { transform: translateY(0); pointer-events: auto; }
 
 .sheet-handle {
   width: 36px; height: 4px;
@@ -1604,8 +1606,9 @@ mark {
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 0 0 40px;
+  pointer-events: none;
 }
-.member-panel--open { transform: translateX(0); }
+.member-panel--open { transform: translateX(0); pointer-events: auto; }
 
 .member-panel__header {
   display: flex; justify-content: flex-end;

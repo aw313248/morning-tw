@@ -97,13 +97,14 @@ const bottomSheet   = document.getElementById('bottom-sheet');
 
   buildDistrictCounts(allData);
   buildMarquee(allData);
-  initMap(openSheet);
   tryAutoLocate();
   setupEvents();
 
-  // Auth 初始化
-  await initAuth();
-  onAuthChange(handleAuthChange);
+  // Auth 初始化（延後，不阻塞首次渲染）
+  setTimeout(async () => {
+    await initAuth();
+    onAuthChange(handleAuthChange);
+  }, 100);
 
   // AI recommender: 開啟店家 sheet
   window.addEventListener('ai:openShop', e => {
@@ -240,9 +241,13 @@ function applyFilters() {
       const matchRadius = !activeRadius || !userLat || (dist !== null && dist <= activeRadius + 0.25);
       return matchType && matchDistrict && matchSearch && matchOpen && matchRadius;
     })
-    .map(s => ({ ...s, dist: (userLat && s.lat) ? distKm(userLat, userLng, s.lat, s.lng) : null }));
+    .map(s => ({
+      ...s,
+      dist:  (userLat && s.lat) ? distKm(userLat, userLng, s.lat, s.lng) : null,
+      _open: isOpenNow(s.hours),
+    }));
 
-  // Sort — chain shops always last
+  // Sort: sponsored → open → non-chain → sortFn → chain last
   const sortFn = (() => {
     if (activeSort === 'distance' && userLat) return (a, b) => (a.dist ?? 999) - (b.dist ?? 999);
     if (activeSort === 'featured') return (a, b) =>
@@ -251,7 +256,8 @@ function applyFilters() {
   })();
 
   filtered.sort((a, b) => {
-    if (a.sponsored !== b.sponsored) return a.sponsored ? -1 : 1; // 贊助商置頂
+    if (a.sponsored !== b.sponsored) return a.sponsored ? -1 : 1;
+    if (a._open !== b._open) return a._open ? -1 : 1;   // 開門排前面
     if (a.chain !== b.chain) return a.chain ? 1 : -1;
     return sortFn(a, b);
   });
@@ -540,8 +546,13 @@ async function shareShop(shop) {
   if (navigator.share) {
     try { await navigator.share({ title: text, url }); return; } catch {}
   }
-  await navigator.clipboard.writeText(url);
-  alert('連結已複製！');
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch {
+    prompt('複製此連結：', url);
+    return;
+  }
+  showToast('連結已複製 ✓');
 }
 
 // ── DISTRICT COUNTS ──
@@ -570,7 +581,9 @@ function highlightText(text, query) {
 function buildMarquee(data) {
   const track = document.getElementById('marquee-track');
   if (!track) return;
-  const items = [...data, ...data].map(s => `
+  // Limit to 30 shops per loop to keep DOM lean (156 nodes was too heavy)
+  const slice = data.slice(0, 30);
+  const items = [...slice, ...slice].map(s => `
     <div class="marquee-item" data-id="${s.id}">
       <div class="marquee-item__icon">
         ${s.photo
@@ -592,6 +605,7 @@ function buildMarquee(data) {
 
 // ── TAB SYSTEM ──
 let currentTab = 'list';
+let mapInitialized = false;
 
 function setTab(tab) {
   currentTab = tab;
@@ -606,6 +620,11 @@ function setTab(tab) {
     el.classList.toggle('bnav__item--active', tab === 'map' ? isMapBtn : !isMapBtn && el.dataset.action === 'home');
   });
   if (tab === 'map') {
+    if (!mapInitialized) {
+      mapInitialized = true;
+      initMap(openSheet);
+      renderMarkers(filtered.length ? filtered : allData);
+    }
     setTimeout(() => invalidateSize(), 80);
   }
 }

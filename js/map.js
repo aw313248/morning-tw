@@ -47,6 +47,7 @@ function _renderUniversities() {
 }
 
 export function renderMarkers(data) {
+  if (!map) return; // map not yet initialized (lazy-load)
   markers.forEach(m => m.marker.remove());
   markers = [];
   data.forEach(s => {
