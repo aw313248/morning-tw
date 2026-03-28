@@ -95,6 +95,7 @@ const bottomSheet   = document.getElementById('bottom-sheet');
   const browseLink = document.querySelector('.hero__browse');
   if (browseLink) browseLink.textContent = `瀏覽全部 ${allData.length} 間早餐店 ↓`;
 
+  buildDistrictCounts(allData);
   buildMarquee(allData);
   initMap(openSheet);
   tryAutoLocate();
@@ -324,9 +325,9 @@ function renderList(data) {
           <button class="shop-card__fav" data-fav="${s.id}" title="Save">${favIcon}</button>
         </div>
         <div class="shop-card__info">
-          <div class="shop-card__name">${s.name}</div>
+          <div class="shop-card__name">${highlightText(s.name, searchQuery)}</div>
           ${s.nameEn ? `<div class="shop-card__name-en">${s.nameEn}</div>` : ''}
-          ${s.hook ? `<p class="shop-card__hook">${s.hook}</p>` : ''}
+          ${s.hook ? `<p class="shop-card__hook">${highlightText(s.hook, searchQuery)}</p>` : ''}
           <div class="shop-card__meta">
             <span>${s.district}</span>
             ${distBadge ? `<span class="shop-card__dot">·</span>${distBadge}` : ''}
@@ -541,6 +542,28 @@ async function shareShop(shop) {
   }
   await navigator.clipboard.writeText(url);
   alert('連結已複製！');
+}
+
+// ── DISTRICT COUNTS ──
+function buildDistrictCounts(data) {
+  const counts = {};
+  data.forEach(s => { counts[s.district] = (counts[s.district] || 0) + 1; });
+  document.querySelectorAll('#district-chips .chip--district[data-district]').forEach(btn => {
+    const d = btn.dataset.district;
+    if (d === 'all') return;
+    const n = counts[d];
+    if (n) {
+      const existing = btn.querySelector('.chip-count');
+      if (!existing) btn.insertAdjacentHTML('beforeend', `<span class="chip-count">${n}</span>`);
+    }
+  });
+}
+
+// ── SEARCH HIGHLIGHT ──
+function highlightText(text, query) {
+  if (!query || !text) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
 }
 
 // ── MARQUEE ──

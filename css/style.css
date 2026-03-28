@@ -497,10 +497,28 @@ body[data-view="map"] #map-container { height: 100% !important; }
   background: #111; border-color: #111; color: #fff;
 }
 
+/* STICKY FILTER ZONE */
+.sticky-filters {
+  position: sticky;
+  top: 52px; /* nav height */
+  z-index: 90;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 0 2px;
+  margin: 0 -24px;
+  padding-left: 24px; padding-right: 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+@media (min-width: 1024px) {
+  .sticky-filters { margin: 0 -40px; padding-left: 40px; padding-right: 40px; }
+}
+
 /* FILTER BAR */
 .filter-bar {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; margin-bottom: 24px;
+  gap: 12px; margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
@@ -1509,6 +1527,21 @@ body[data-view="map"] #map-container { height: 100% !important; }
   40%  { transform: scale(1.6); }
   100% { transform: scale(1); }
 }
+
+/* 搜尋關鍵字 highlight */
+mark {
+  background: rgba(245,166,35,0.25);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* District chip 數量 badge */
+.chip--district .chip-count {
+  font-size: 10px; font-weight: 600;
+  color: #aaa; margin-left: 3px;
+}
+.chip--district.chip--active .chip-count { color: rgba(255,255,255,0.75); }
 
 /* Sheet 下滑過渡 */
 .bottom-sheet { transition: transform 0.1s linear; }

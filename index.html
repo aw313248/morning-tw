@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#F5A623">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MORNING TW">
   <style>
     .map-pin {
       width: 32px; height: 32px;
@@ -150,46 +155,50 @@
         </div>
       </div>
 
-      <!-- SORT BAR -->
-      <div class="sort-bar" id="sort-bar">
-        <button class="sort-tab sort-tab--active" data-sort="popular">🔥 人氣</button>
-        <button class="sort-tab" data-sort="featured">⭐ 精選</button>
-        <button class="sort-tab" data-sort="distance">📍 距離</button>
-        <span class="sort-bar__sep"></span>
-        <button class="sort-tab" id="btn-open-now">🕐 現在營業</button>
-        <button class="sort-tab" id="btn-favs-filter">❤️ 收藏</button>
-      </div>
+      <!-- STICKY FILTER ZONE -->
+      <div class="sticky-filters" id="sticky-filters">
+        <!-- SORT BAR -->
+        <div class="sort-bar" id="sort-bar">
+          <button class="sort-tab sort-tab--active" data-sort="popular">🔥 人氣</button>
+          <button class="sort-tab" data-sort="featured">⭐ 精選</button>
+          <button class="sort-tab" data-sort="distance">📍 距離</button>
+          <span class="sort-bar__sep"></span>
+          <button class="sort-tab" id="btn-open-now">🕐 現在營業</button>
+          <button class="sort-tab" id="btn-favs-filter">❤️ 收藏</button>
+        </div>
 
-      <!-- FILTER BAR -->
-      <div class="filter-bar">
-        <div class="filter-bar__chips" id="type-chips">
-          <button class="chip chip--active" data-type="all">全部</button>
-          <button class="chip chip--cat" data-type="traditional">🍳 傳統</button>
-          <button class="chip chip--cat" data-type="western">🥐 西式</button>
-          <button class="chip chip--cat" data-type="favorites">❤️ 收藏</button>
-          <span class="chip-divider">|</span>
-          <button class="chip chip--sub" data-type="egg">蛋餅</button>
-          <button class="chip chip--sub" data-type="rice">飯糰</button>
-          <button class="chip chip--sub" data-type="soup">湯品</button>
-          <button class="chip chip--sub" data-type="local">在地</button>
-          <button class="chip chip--sub" data-type="drink">豆漿</button>
-          <span class="chip-divider">|</span>
-          <button class="chip chip--sub chip--ac" data-type="ac">❄️ 有冷氣</button>
-        </div>
-        <div class="filter-bar__chips" id="district-chips" style="margin-top:8px">
-          <button class="chip chip--district chip--active" data-district="all">全台中</button>
-          <button class="chip chip--district" data-district="南區">南區</button>
-          <button class="chip chip--district" data-district="南屯區">南屯</button>
-          <button class="chip chip--district" data-district="中區">中區</button>
-          <button class="chip chip--district" data-district="西區">西區</button>
-          <button class="chip chip--district" data-district="北區">北區</button>
-          <button class="chip chip--district" data-district="西屯區">西屯</button>
-          <button class="chip chip--district" data-district="北屯區">北屯</button>
-          <button class="chip chip--district" data-district="大里區">大里</button>
-          <button class="chip chip--district" data-district="霧峰區">霧峰</button>
-        </div>
-        <div class="filter-bar__stats" id="stats-bar">
-          找到 <strong id="stats-count">0</strong><span id="stats-label"> 間</span>
+        <!-- FILTER BAR -->
+        <div class="filter-bar">
+          <div class="filter-bar__chips" id="type-chips">
+            <button class="chip chip--active" data-type="all">全部</button>
+            <button class="chip chip--cat" data-type="traditional">🍳 傳統</button>
+            <button class="chip chip--cat" data-type="western">🥐 西式</button>
+            <button class="chip chip--cat" data-type="favorites">❤️ 收藏</button>
+            <span class="chip-divider">|</span>
+            <button class="chip chip--sub" data-type="egg">蛋餅</button>
+            <button class="chip chip--sub" data-type="rice">飯糰</button>
+            <button class="chip chip--sub" data-type="soup">湯品</button>
+            <button class="chip chip--sub" data-type="local">在地</button>
+            <button class="chip chip--sub" data-type="drink">豆漿</button>
+            <span class="chip-divider">|</span>
+            <button class="chip chip--sub chip--ac" data-type="ac">❄️ 有冷氣</button>
+          </div>
+          <div class="filter-bar__chips" id="district-chips" style="margin-top:8px">
+            <button class="chip chip--district chip--active" data-district="all">全台中</button>
+            <button class="chip chip--district" data-district="南區">南區</button>
+            <button class="chip chip--district" data-district="南屯區">南屯</button>
+            <button class="chip chip--district" data-district="中區">中區</button>
+            <button class="chip chip--district" data-district="西區">西區</button>
+            <button class="chip chip--district" data-district="北區">北區</button>
+            <button class="chip chip--district" data-district="西屯區">西屯</button>
+            <button class="chip chip--district" data-district="北屯區">北屯</button>
+            <button class="chip chip--district" data-district="東區">東區</button>
+            <button class="chip chip--district" data-district="大里區">大里</button>
+            <button class="chip chip--district" data-district="霧峰區">霧峰</button>
+          </div>
+          <div class="filter-bar__stats" id="stats-bar">
+            找到 <strong id="stats-count">0</strong><span id="stats-label"> 間</span>
+          </div>
         </div>
       </div>
 
